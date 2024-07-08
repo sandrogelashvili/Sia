@@ -6,8 +6,7 @@
 //
 
 import UIKit
-
-import UIKit
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -16,12 +15,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
-//        let viewModel = MainPageViewControllerViewModel()
-        let mainPage = ViewController()
-        let navController = UINavigationController(rootViewController: mainPage)
+        let onboardingView = OnBoardingView()
+        let hostingController = UIHostingController(rootView: onboardingView)
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = navController
+        window?.rootViewController = hostingController
         window?.makeKeyAndVisible()
     }
 }
