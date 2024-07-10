@@ -13,7 +13,7 @@ struct OnBoardingView: View {
     
     var body: some View {
         if currentPage > totalPages {
-            HomePageView()
+            TabBarView()
         } else {
             if currentPage == 1 {
                 OnBoardingReusablePage(
