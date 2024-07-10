@@ -12,6 +12,7 @@
 		08658FC02C3EDFE600F11477 /* HomePageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08658FBF2C3EDFE600F11477 /* HomePageViewModel.swift */; };
 		08658FC62C3EF4E200F11477 /* FirestoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08658FC52C3EF4E200F11477 /* FirestoreManager.swift */; };
 		08658FCC2C3F26F800F11477 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08658FCB2C3F26F800F11477 /* TabBarView.swift */; };
+		08658FD02C3F2F2B00F11477 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08658FCF2C3F2F2B00F11477 /* FilterView.swift */; };
 		086A83562C35C77300735935 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A83552C35C77300735935 /* AppDelegate.swift */; };
 		086A83582C35C77300735935 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A83572C35C77300735935 /* SceneDelegate.swift */; };
 		086A835A2C35C77300735935 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A83592C35C77300735935 /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 		08658FBF2C3EDFE600F11477 /* HomePageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageViewModel.swift; sourceTree = "<group>"; };
 		08658FC52C3EF4E200F11477 /* FirestoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreManager.swift; sourceTree = "<group>"; };
 		08658FCB2C3F26F800F11477 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		08658FCF2C3F2F2B00F11477 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		086A83522C35C77300735935 /* Sia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		086A83552C35C77300735935 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		086A83572C35C77300735935 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +93,14 @@
 				08658FC52C3EF4E200F11477 /* FirestoreManager.swift */,
 			);
 			path = FirestoreManager;
+			sourceTree = "<group>";
+		};
+		08658FCE2C3F2F1A00F11477 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				08658FCF2C3F2F2B00F11477 /* FilterView.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 		086A83492C35C77300735935 = {
@@ -165,6 +175,7 @@
 		0871632E2C3C40A000AF59DF /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				08658FCE2C3F2F1A00F11477 /* Filter */,
 				0871632F2C3C40D400AF59DF /* HomePageView.swift */,
 				08658FBF2C3EDFE600F11477 /* HomePageViewModel.swift */,
 			);
@@ -255,6 +266,7 @@
 				086A835A2C35C77300735935 /* ViewController.swift in Sources */,
 				08658FCC2C3F26F800F11477 /* TabBarView.swift in Sources */,
 				0871632B2C3C13C500AF59DF /* OnBoardingView.swift in Sources */,
+				08658FD02C3F2F2B00F11477 /* FilterView.swift in Sources */,
 				08658FBE2C3EDE9800F11477 /* Category.swift in Sources */,
 				086A83562C35C77300735935 /* AppDelegate.swift in Sources */,
 				0871632D2C3C13DD00AF59DF /* OnBoardingReusableView.swift in Sources */,
