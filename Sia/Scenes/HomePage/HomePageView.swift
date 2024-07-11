@@ -86,30 +86,8 @@ private struct CategoryView: View {
                     .font(.headline)
                     .foregroundColor(.white)
                 
-                AsyncImage(url: URL(string: imageURL)) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(height: 130)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 130)
-                            .padding(.leading, 16)
-                            .padding(.bottom, -20)
-                    case .failure:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 130)
-                            .foregroundColor(.gray)
-                            .padding(.leading, 16)
-                            .padding(.bottom, -20)
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
+                AsyncImageView(imageURL: imageURL,
+                               height: 130)
             }
         }
     }
