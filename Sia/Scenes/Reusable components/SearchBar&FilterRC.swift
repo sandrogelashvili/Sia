@@ -10,6 +10,7 @@ import SwiftUI
 struct SearchBarFilterRC: View {
     @Binding var searchText: String
     var filterAction: () -> Void
+    var searchAction: () -> Void
     
     var body: some View {
         HStack {
@@ -49,7 +50,7 @@ struct SearchBarFilterRC: View {
     }
     
     private var searchBarTextField: some View {
-        TextField("ძებნა", text: $searchText)
+        TextField("ძებნა", text: $searchText, onCommit: { searchAction() })
             .padding(7)
             .padding(.leading, -7)
             .frame(height: 45)

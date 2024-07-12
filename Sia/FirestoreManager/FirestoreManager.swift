@@ -12,6 +12,7 @@ import Combine
 class FirestoreManager: ObservableObject {
     @Published var categories: [Category] = []
     @Published var stores: [Store] = []
+    @Published var allProducts: [Product] = []
     
     private var db = Firestore.firestore()
     
@@ -51,5 +52,29 @@ class FirestoreManager: ObservableObject {
                     return try? doc.data(as: Store.self)
                 }
             }
+    }
+    
+    func fetchAllProducts() {
+        db.collectionGroup("products").getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error fetching products: \(error)")
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                print("No products found")
+                return
+            }
+            self.allProducts = documents.compactMap { doc -> Product? in
+                do {
+                    var product = try doc.data(as: Product.self)
+                    product.documentID = doc.documentID
+                    return product
+                } catch {
+                    print("Error decoding product: \(error)")
+                    return nil
+                }
+            }
+            print("Fetched Products: \(self.allProducts)")
+        }
     }
 }

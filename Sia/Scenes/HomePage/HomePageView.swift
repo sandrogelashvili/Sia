@@ -14,30 +14,29 @@ struct HomePageView: View {
     
     var body: some View {
         ZStack {
-            Color("BackgroundColor")
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack(alignment: .leading) {
+            VStack {
                 SearchBarFilterRC(searchText: $searchText,
                                   filterAction: {
                     withAnimation {
                         isFilterViewPresented = true
                     }
+                }, searchAction: {
+                    withAnimation {
+                        viewModel.search(query: searchText)
+                    }
                 })
                 
-                categoryText
-                
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(viewModel.categories) { category in
-                            CategoryView(categoryName: category.name,
-                                         imageURL: category.categoryImageURL,
-                                         color: Color(hex: category.backgroundColor) ?? .gray)
-                        }
-                    }
-                    .padding(.horizontal)
+                if searchText.isEmpty {
+                    homePageContent
+                } else {
+                    searchResultsView
                 }
             }
+            .background(Color("BackgroundColor"))
+            .onAppear {
+                viewModel.fetchData()
+            }
+            
             if isFilterViewPresented {
                 GeometryReader { geometry in
                     ZStack(alignment: .trailing) {
@@ -63,10 +62,27 @@ struct HomePageView: View {
         }
     }
     
-    private var categoryText: some View {
-        Text("აირჩიეთ კატოგორია")
-            .padding(.leading, 20)
-            .font(.system(size: 20, weight: .semibold))
+    private var homePageContent: some View {
+        VStack(alignment: .leading) {
+            Text("აირჩიეთ კატოგორია")
+                .padding(.leading, 20)
+                .font(.system(size: 20, weight: .semibold))
+            
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                    ForEach(viewModel.categories) { category in
+                        CategoryView(categoryName: category.name,
+                                     imageURL: category.categoryImageURL,
+                                     color: Color(hex: category.backgroundColor) ?? .gray)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+    
+    private var searchResultsView: some View {
+        SearchResultsViewControllerWrapper(products: viewModel.filteredProducts)
     }
 }
 
@@ -86,8 +102,7 @@ private struct CategoryView: View {
                     .font(.headline)
                     .foregroundColor(.white)
                 
-                AsyncImageView(imageURL: imageURL,
-                               height: 130)
+                AsyncImageView(imageURL: imageURL, height: 130)
             }
         }
     }
@@ -118,6 +133,7 @@ extension Color {
         return nil
     }
 }
+
 
 #Preview {
     HomePageView()
