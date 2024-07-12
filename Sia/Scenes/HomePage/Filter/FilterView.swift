@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FilterView: View {
     @Binding var isPresented: Bool
+    @Binding var selectedStoreId: String?
     @StateObject private var viewModel = FilterViewModel()
     
     var body: some View {
@@ -18,7 +19,7 @@ struct FilterView: View {
             
             HStack {
                 Text("მაღაზიების მიხედვით")
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.system(size: 20, weight: .semibold))
                 
                 Spacer()
                 
@@ -26,56 +27,87 @@ struct FilterView: View {
             }
             .padding()
             ScrollView {
-                VStack {
+                VStack(spacing: 10) {
                     ForEach(viewModel.stores) { store in
                         StoreFilterCell(storeName: store.name,
                                         imageURL: store.storeImageURL,
-                                        height: 100,
-                                        backgroundColor: backgroundColor(for: store.name))
+                                        height: 50,
+                                        isSelected: selectedStoreId == store.id,
+                                        onSelect: {
+                            if selectedStoreId == store.id {
+                                selectedStoreId = nil
+                            } else {
+                                selectedStoreId = store.id
+                            }
+                        })
                     }
                 }
                 Divider()
                 
                 HStack {
                     Text("ფასის მიხედვით")
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.system(size: 20, weight: .semibold))
                     
                     Spacer()
                 }
                 .padding()
             }
-            
             Spacer()
+            
         }
+        .background(Color("BackgroundColor"))
     }
     
     private struct StoreFilterCell: View {
         let storeName: String
         let imageURL: String
         let height: CGFloat
-        let backgroundColor: Color
+        let isSelected: Bool
+        let onSelect: () -> Void
         
         var body: some View {
             ZStack {
-                RoundedRectangle(cornerRadius: 15)
-                    .fill(backgroundColor)
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.white)
                     .frame(height: height)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                    }
+                    .onTapGesture {
+                        onSelect()
+                    }
                 
                 HStack {
                     AsyncImageView(imageURL: imageURL,
                                    height: height - 20)
                     .padding(.bottom)
-                    .shadow(radius: 10)
                     
                     Text(storeName)
-                        .foregroundColor(.white)
-                        .font(.system(size: 33, weight: .medium))
-                        .padding(.leading)
+                        .foregroundColor(.black)
+                        .font(.system(size: 20, weight: .bold))
+                        .padding(.leading, 5)
                     
                     Spacer()
+                    
+                    ZStack {
+                        Circle()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(.white)
+                            .overlay {
+                                Circle()
+                                    .stroke(Color("AppThemeGreen"), lineWidth: 1)
+                            }
+                        if isSelected {
+                            Circle()
+                                .frame(width: 18, height: 18)
+                                .foregroundColor(Color("AppThemeGreen"))
+                        }
+                    }
+                    .padding(.trailing)
                 }
             }
-            .padding()
+            .padding(.horizontal)
         }
     }
     
@@ -88,25 +120,5 @@ struct FilterView: View {
                 .font(.largeTitle)
         }
     }
-    
-    private func backgroundColor(for storeName: String) -> Color {
-        switch storeName.lowercased() {
-        case "ნიკორა":
-            return Color(#colorLiteral(red: 0.9244207144,
-                                       green: 0.1990495324,
-                                       blue: 0.2151132822,
-                                       alpha: 1))
-        case "აგროჰაბი":
-            return Color(#colorLiteral(red: 0.227994889,
-                                       green: 0.6997299194,
-                                       blue: 0.2792698145,
-                                       alpha: 1))
-        default:
-            return Color.gray.opacity(0.2)
-        }
-    }
 }
 
-#Preview {
-    FilterView(isPresented: .constant(false))
-}

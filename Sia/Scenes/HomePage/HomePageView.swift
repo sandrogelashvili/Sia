@@ -11,54 +11,68 @@ struct HomePageView: View {
     @StateObject private var viewModel = HomePageViewModel()
     @State private var searchText = ""
     @State private var isFilterViewPresented = false
+    @State private var selectedCategory: Category? = nil
     
     var body: some View {
-        ZStack {
-            VStack {
-                SearchBarFilterRC(searchText: $searchText,
-                                  filterAction: {
-                    withAnimation {
-                        isFilterViewPresented = true
+        NavigationStack {
+            ZStack {
+                VStack {
+                    SearchBarFilterRC(searchText: $searchText,
+                                      filterAction: {
+                        withAnimation {
+                            isFilterViewPresented = true
+                        }
+                    }, searchAction: {
+                        withAnimation {
+                            viewModel.search(query: searchText)
+                        }
+                    })
+                    
+                    if searchText.isEmpty {
+                        homePageContent
+                    } else {
+                        searchResultsView
                     }
-                }, searchAction: {
-                    withAnimation {
-                        viewModel.search(query: searchText)
-                    }
-                })
+                }
+                .background(Color("BackgroundColor"))
+                .onAppear {
+                    viewModel.fetchData()
+                }
                 
-                if searchText.isEmpty {
-                    homePageContent
-                } else {
-                    searchResultsView
-                }
-            }
-            .background(Color("BackgroundColor"))
-            .onAppear {
-                viewModel.fetchData()
-            }
-            
-            if isFilterViewPresented {
-                GeometryReader { geometry in
-                    ZStack(alignment: .trailing) {
-                        Color.black.opacity(0.4)
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                withAnimation {
-                                    isFilterViewPresented = false
+                if isFilterViewPresented {
+                    GeometryReader { geometry in
+                        ZStack(alignment: .trailing) {
+                            Color.black.opacity(0.4)
+                                .edgesIgnoringSafeArea(.all)
+                                .onTapGesture {
+                                    withAnimation {
+                                        isFilterViewPresented = false
+                                    }
                                 }
-                            }
-                        
-                        FilterView(isPresented: $isFilterViewPresented)
-                            .frame(width: geometry.size.width * 0.8, height: geometry.size.height)
-                            .background(Color.white)
-                            .cornerRadius(16)
-                            .shadow(radius: 5)
-                            .offset(x: isFilterViewPresented ? 0 : geometry.size.width)
-                            .animation(.easeInOut)
+                            
+                            FilterView(isPresented: $isFilterViewPresented, selectedStoreId: $viewModel.selectedStoreId)
+                                .frame(width: geometry.size.width * 0.8, height: geometry.size.height)
+                                .background(Color.white)
+                                .cornerRadius(16)
+                                .shadow(radius: 5)
+                                .offset(x: isFilterViewPresented ? 0 : geometry.size.width)
+                                .animation(.easeInOut)
+                        }
                     }
+                    .edgesIgnoringSafeArea(.all)
                 }
-                .edgesIgnoringSafeArea(.all)
             }
+            .background(
+                NavigationLink(
+                    destination: selectedCategory.map { CategoryProductsView(category: $0, selectedStoreId: viewModel.selectedStoreId) },
+                    isActive: Binding(
+                        get: { selectedCategory != nil },
+                        set: { if !$0 { selectedCategory = nil } }
+                    )
+                ) {
+                    EmptyView()
+                }
+            )
         }
     }
     
@@ -69,11 +83,15 @@ struct HomePageView: View {
                 .font(.system(size: 20, weight: .semibold))
             
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                     ForEach(viewModel.categories) { category in
-                        CategoryView(categoryName: category.name,
-                                     imageURL: category.categoryImageURL,
-                                     color: Color(hex: category.backgroundColor) ?? .gray)
+                        Button(action: {
+                            selectedCategory = category
+                        }) {
+                            CategoryView(categoryName: category.name,
+                                         imageURL: category.categoryImageURL,
+                                         color: Color(hex: category.backgroundColor) ?? .gray)
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -82,7 +100,31 @@ struct HomePageView: View {
     }
     
     private var searchResultsView: some View {
-        SearchResultsViewControllerWrapper(products: viewModel.filteredProducts)
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible()),
+                                GridItem(.flexible())],
+                      spacing: 5) {
+                ForEach(viewModel.filteredProducts, id: \.id) { product in
+                    ProductCell(
+                        productName: product.name,
+                        productImageURL: product.productImageURL,
+                        stockStatus: product.stockStatus,
+                        price: product.price,
+                        storeName: getStoreName(for: product.storeId),
+                        storeImageUrl: getStoreImageURL(for: product.storeId)
+                    )
+                }
+            }
+                      .padding(.horizontal)
+        }
+    }
+    
+    private func getStoreName(for storeId: String) -> String {
+        return viewModel.stores.first { $0.id == storeId }?.name ?? ""
+    }
+    
+    private func getStoreImageURL(for storeId: String) -> String {
+        return viewModel.stores.first { $0.id == storeId }?.storeImageURL ?? ""
     }
 }
 
@@ -132,6 +174,11 @@ extension Color {
         }
         return nil
     }
+}
+
+
+#Preview {
+    HomePageView()
 }
 
 

@@ -54,27 +54,29 @@ class FirestoreManager: ObservableObject {
             }
     }
     
-    func fetchAllProducts() {
-        db.collectionGroup("products").getDocuments { (snapshot, error) in
-            if let error = error {
-                print("Error fetching products: \(error)")
-                return
-            }
-            guard let documents = snapshot?.documents else {
-                print("No products found")
-                return
-            }
-            self.allProducts = documents.compactMap { doc -> Product? in
-                do {
-                    var product = try doc.data(as: Product.self)
-                    product.documentID = doc.documentID
-                    return product
-                } catch {
-                    print("Error decoding product: \(error)")
-                    return nil
+    func fetchAllProducts() -> Future<[Product], Error> {
+        return Future { promise in
+            self.db.collectionGroup("products").getDocuments { (snapshot, error) in
+                if let error = error {
+                    promise(.failure(error))
+                    return
                 }
+                guard let documents = snapshot?.documents else {
+                    promise(.success([]))
+                    return
+                }
+                let products = documents.compactMap { doc -> Product? in
+                    do {
+                        var product = try doc.data(as: Product.self)
+                        product.documentID = doc.documentID
+                        return product
+                    } catch {
+                        print("Error decoding product: \(error)")
+                        return nil
+                    }
+                }
+                promise(.success(products))
             }
-            print("Fetched Products: \(self.allProducts)")
         }
     }
 }
