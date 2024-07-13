@@ -96,7 +96,7 @@ struct ProductCell: View {
     }
     
     private var priceLabel: some View {
-        Text("\(price)₾")
+        Text(formattedPrice)
             .foregroundColor(.black)
             .font(.system(size: 14, weight: .medium))
         
@@ -126,4 +126,17 @@ struct ProductCell: View {
             return .gray
         }
     }
+    
+    private var formattedPrice: String {
+        let formatted = ProductCell.numberFormatter.string(from: NSNumber(value: price)) ?? "\(price)"
+        return formatted + "₾"
+    }
+    
+    private static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
 }

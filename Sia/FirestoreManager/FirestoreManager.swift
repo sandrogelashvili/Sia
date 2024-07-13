@@ -13,6 +13,7 @@ class FirestoreManager: ObservableObject {
     @Published var categories: [Category] = []
     @Published var stores: [Store] = []
     @Published var allProducts: [Product] = []
+    @Published var locations: [Location] = []
     
     private var db = Firestore.firestore()
     
@@ -79,4 +80,40 @@ class FirestoreManager: ObservableObject {
             }
         }
     }
-}
+    
+    func fetchLocations() -> Future<[Location], Error> {
+        return Future { promise in
+            self.db.collection("stores").getDocuments { (snapshot, error) in
+                if let error = error {
+                    promise(.failure(error))
+                    return
+                }
+                guard let documents = snapshot?.documents else {
+                    promise(.success([]))
+                    return
+                }
+                
+                var allLocations: [Location] = []
+                let dispatchGroup = DispatchGroup()
+                
+                for document in documents {
+                    dispatchGroup.enter()
+                    document.reference.collection("locations").getDocuments { (locationSnapshot, locationError) in
+                        if let locationError = locationError {
+                            print("Error fetching locations: \(locationError)")
+                        } else {
+                            let locations = locationSnapshot?.documents.compactMap { doc -> Location? in
+                                return try? doc.data(as: Location.self)
+                            } ?? []
+                            allLocations.append(contentsOf: locations)
+                        }
+                        dispatchGroup.leave()
+                    }
+                }
+                
+                dispatchGroup.notify(queue: .main) {
+                    promise(.success(allLocations))
+                }
+            }
+        }
+    }}

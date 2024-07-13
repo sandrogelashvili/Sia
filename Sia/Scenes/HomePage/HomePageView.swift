@@ -56,29 +56,25 @@ struct HomePageView: View {
                                 .cornerRadius(16)
                                 .shadow(radius: 5)
                                 .offset(x: isFilterViewPresented ? 0 : geometry.size.width)
-                                .animation(.easeInOut)
                         }
                     }
                     .edgesIgnoringSafeArea(.all)
                 }
             }
-            .background(
-                NavigationLink(
-                    destination: selectedCategory.map { CategoryProductsView(category: $0, selectedStoreId: viewModel.selectedStoreId) },
-                    isActive: Binding(
-                        get: { selectedCategory != nil },
-                        set: { if !$0 { selectedCategory = nil } }
-                    )
-                ) {
-                    EmptyView()
+            .navigationDestination(isPresented: Binding(
+                get: { selectedCategory != nil },
+                set: { if !$0 { selectedCategory = nil } }
+            )) {
+                if let selectedCategory = selectedCategory {
+                    CategoryProductsView(category: selectedCategory, selectedStoreId: viewModel.selectedStoreId)
                 }
-            )
+            }
         }
     }
     
     private var homePageContent: some View {
         VStack(alignment: .leading) {
-            Text("აირჩიეთ კატოგორია")
+            Text("აირჩიეთ კატეგორია")
                 .padding(.leading, 20)
                 .font(.system(size: 20, weight: .semibold))
             
@@ -175,12 +171,6 @@ extension Color {
         return nil
     }
 }
-
-
-#Preview {
-    HomePageView()
-}
-
 
 #Preview {
     HomePageView()
