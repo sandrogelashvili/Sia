@@ -21,6 +21,12 @@ struct TabBarView: View {
                     Image("Home")
                     Text("მთავარი")
                 }
+            
+            ListPageViewControllerWrapper()
+                 .tabItem {
+                     Image("List")
+                     Text("პროდუქტების სია")
+                 }
         }
         .accentColor(Color("AppThemeGreen"))
     }
