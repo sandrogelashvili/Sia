@@ -16,42 +16,59 @@ struct OnBoardingReusablePage: View {
     var isLastPage: Bool
     
     var body: some View {
-        VStack {
-            if currentPage == 1 {
-                HStack {
-                    Spacer()
-                    
-                    skipButton
-                }
-                .padding()
-            } else {
-                HStack {
-                    backButton
-                    
-                    Spacer()
-                    
-                    skipButton
-                }
-                .padding()
-            }
-            
-            HStack(alignment: .center) {
-                textForTitle
-            }
-            .padding()
-            
-            Spacer()
-            
+        ZStack {
             onBoardingImage
+                .edgesIgnoringSafeArea(.all)
             
-            Spacer()
-            
-            textForDescription
-            
-            indicatorBar
-                .padding()
-            
-            nextButton
+            VStack (alignment: .leading){
+                if currentPage == 1 {
+                    HStack {
+                        Spacer()
+                        
+                        skipButton
+                    }
+                    .padding()
+                } else {
+                    
+                    HStack {
+                        backButton
+                        
+                        Spacer()
+                        
+                        skipButton
+                    }
+                }
+                Spacer()
+                
+                textForTitle
+                    .padding(.bottom, 10)
+                
+                textForDescription
+                    .padding(.bottom, 30)
+                
+                HStack {
+                    indicatorBar
+                        .padding(.vertical)
+                    
+                    Spacer()
+                }
+                
+                nextButton
+            }
+            .padding(.horizontal, 75)
+        }
+    }
+    
+    private var onBoardingImage: some View {
+        ZStack {
+            Image(imageForOBPage)
+                .resizable()
+                .scaledToFill()
+            LinearGradient(
+                gradient: Gradient(colors: [.black.opacity(0.8), .clear]),
+                startPoint: .bottom,
+                endPoint: .top
+            )
         }
     }
     
@@ -60,9 +77,9 @@ struct OnBoardingReusablePage: View {
             currentPage -= 1
         } label: {
             Image(systemName: "chevron.left")
-                .foregroundStyle(.black)
+                .foregroundStyle(.blue)
             Text("Back")
-                .foregroundStyle(.black)
+                .foregroundStyle(.blue)
         }
     }
     
@@ -71,27 +88,20 @@ struct OnBoardingReusablePage: View {
             currentPage = totalPages + 1
         } label: {
             Text("Skip")
-                .foregroundStyle(.black)
+                .foregroundStyle(.blue)
         }
     }
     
     private var textForTitle: some View {
         Text(titleForOBPage)
-            .font(.title)
-            .fontWeight(.medium)
-    }
-    
-    private var onBoardingImage: some View {
-        Image(imageForOBPage)
-            .resizable()
-            .scaledToFit()
+            .font(.custom("Helvetica", size: 30))
+            .foregroundColor(.white)
     }
     
     private var textForDescription: some View {
         Text(descriptionForOBPage)
-            .padding()
-            .font(.system(size: 16, weight: .regular))
-            .multilineTextAlignment(.center)
+            .font(.custom("Helvetica", size: 14))
+            .foregroundStyle(.white)
     }
     
     private var nextButton: some View {
@@ -105,11 +115,11 @@ struct OnBoardingReusablePage: View {
             Text(isLastPage ? "დაწყება" : "შემდეგი")
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
-                .frame(height: 50)
+                .frame(height: 58.5)
                 .frame(minWidth: 0, maxWidth: .infinity)
                 .background(Color("AppThemeGreen"))
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-                .padding()
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+                .padding(.bottom)
         }
     }
     
@@ -119,11 +129,13 @@ struct OnBoardingReusablePage: View {
                 indicator(for: index)
             }
         }
+        .padding(.horizontal)
     }
     
     private func indicator(for index: Int) -> some View {
-        Color(index == currentPage ? Color("AppThemeGreen") : .black)
-            .frame(height: 8 / UIScreen.main.scale)
+        Circle()
+            .fill(index == currentPage ? Color.white : Color.gray)
+            .frame(width: 12, height: 12)
     }
 }
 
