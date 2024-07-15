@@ -35,9 +35,6 @@ struct HomePageView: View {
                     }
                 }
                 .background(Color("BackgroundColor"))
-                .onAppear {
-                    viewModel.fetchData()
-                }
                 
                 if isFilterViewPresented {
                     GeometryReader { geometry in
@@ -66,7 +63,8 @@ struct HomePageView: View {
                 set: { if !$0 { selectedCategory = nil } }
             )) {
                 if let selectedCategory = selectedCategory {
-                    CategoryProductsView(category: selectedCategory, selectedStoreId: viewModel.selectedStoreId)
+                    CategoryProductsView(category: selectedCategory,
+                                         selectedStoreId: viewModel.selectedStoreId)
                 }
             }
         }
@@ -84,9 +82,9 @@ struct HomePageView: View {
                         Button(action: {
                             selectedCategory = category
                         }) {
-                            CategoryView(categoryName: category.name,
-                                         imageURL: category.categoryImageURL,
-                                         color: Color(hex: category.backgroundColor) ?? .gray)
+                            CategoryCellView(categoryName: category.name,
+                                             imageURL: category.categoryImageURL,
+                                             color: Color(hex: category.backgroundColor) ?? .gray)
                         }
                     }
                 }
@@ -97,80 +95,33 @@ struct HomePageView: View {
     
     private var searchResultsView: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible()),
-                                GridItem(.flexible())],
-                      spacing: 5) {
-                ForEach(viewModel.filteredProducts, id: \.id) { product in
-                    ProductCell(
-                        productName: product.name,
-                        productImageURL: product.productImageURL,
-                        stockStatus: product.stockStatus,
-                        price: product.price,
-                        storeName: getStoreName(for: product.storeId),
-                        storeImageUrl: getStoreImageURL(for: product.storeId)
-                    )
+            LazyVStack(alignment: .leading) {
+                ForEach(viewModel.groupedSearchProducts.keys.sorted(), id: \.self) { location in
+                    Section(header: Text(location).font(.headline).padding()) {
+                        LazyVGrid(columns: [
+                            GridItem(.fixed(165), spacing: 20),
+                            GridItem(.fixed(165), spacing: 20)
+                        ], spacing: 5) {
+                            ForEach(viewModel.groupedSearchProducts[location] ?? []) { product in
+                                ProductCell(
+                                    productName: product.name,
+                                    productImageURL: product.productImageURL,
+                                    stockStatus: product.stockStatus,
+                                    price: product.price,
+                                    storeName: viewModel.getStoreName(for: product.storeId),
+                                    storeImageUrl: viewModel.getStoreImageURL(for: product.storeId)
+                                )
+                            }
+                        }
+                        Divider()
+                    }
                 }
             }
-                      .padding(.horizontal)
-        }
-    }
-    
-    private func getStoreName(for storeId: String) -> String {
-        return viewModel.stores.first { $0.id == storeId }?.name ?? ""
-    }
-    
-    private func getStoreImageURL(for storeId: String) -> String {
-        return viewModel.stores.first { $0.id == storeId }?.storeImageURL ?? ""
-    }
-}
-
-private struct CategoryView: View {
-    let categoryName: String
-    let imageURL: String
-    let color: Color
-    
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(color)
-                .frame(height: 180)
-            
-            VStack {
-                Text(categoryName)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                
-                AsyncImageView(imageURL: imageURL, height: 130)
-            }
+            .padding(.horizontal)
         }
     }
 }
 
-extension Color {
-    init?(hex: String) {
-        let r, g, b: CGFloat
-        
-        if hex.hasPrefix("#") {
-            let start = hex.index(hex.startIndex, offsetBy: 1)
-            let hexColor = String(hex[start...])
-            
-            if hexColor.count == 6 {
-                let scanner = Scanner(string: hexColor)
-                var hexNumber: UInt64 = 0
-                
-                if scanner.scanHexInt64(&hexNumber) {
-                    r = CGFloat((hexNumber & 0xff0000) >> 16) / 255
-                    g = CGFloat((hexNumber & 0x00ff00) >> 8) / 255
-                    b = CGFloat(hexNumber & 0x0000ff) / 255
-                    
-                    self.init(red: r, green: g, blue: b)
-                    return
-                }
-            }
-        }
-        return nil
-    }
-}
 
 #Preview {
     HomePageView()
