@@ -38,6 +38,24 @@ class FirestoreManager: ObservableObject {
             }
     }
     
+    func fetchStores(completion: @escaping (Result<[Store], Error>) -> Void) {
+        db.collection("stores").getDocuments { (snapshot, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                completion(.success([]))
+                return
+            }
+            let stores = documents.compactMap { doc -> Store? in
+                return try? doc.data(as: Store.self)
+            }
+            self.stores = stores
+            completion(.success(stores))
+        }
+    }
+    
     func fetchStores() {
         db.collection("stores")
             .getDocuments { (snapshot, error) in
@@ -116,4 +134,40 @@ class FirestoreManager: ObservableObject {
                 }
             }
         }
-    }}
+    }
+    
+    func fetchLocationsForListPage(completion: @escaping (Result<[Location], Error>) -> Void) {
+        db.collection("stores").getDocuments { (snapshot, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                completion(.success([]))
+                return
+            }
+            
+            var allLocations: [Location] = []
+            let dispatchGroup = DispatchGroup()
+            
+            for document in documents {
+                dispatchGroup.enter()
+                document.reference.collection("locations").getDocuments { (locationSnapshot, locationError) in
+                    if let locationError = locationError {
+                        print("Error fetching locations: \(locationError)")
+                    } else {
+                        let locations = locationSnapshot?.documents.compactMap { doc -> Location? in
+                            return try? doc.data(as: Location.self)
+                        } ?? []
+                        allLocations.append(contentsOf: locations)
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                completion(.success(allLocations))
+            }
+        }
+    }
+}

@@ -14,6 +14,8 @@ struct ProductCell: View {
     let price: Double
     let storeName: String
     let storeImageUrl: String
+    let isFavorite: Bool
+    let onFavoriteTapped: () -> Void
     
     var body: some View {
         ZStack {
@@ -104,13 +106,22 @@ struct ProductCell: View {
     
     private var favoriteButton: some View {
         Button(action: {
-            print("Button tapped!")
+            onFavoriteTapped()
         }) {
-            Image(systemName: "heart")
-                .foregroundColor(.white)
-                .frame(width: 32, height: 32)
-                .background(Color("AppThemeGreen"))
-                .cornerRadius(5)
+            if isFavorite {
+                Image(systemName: "minus.square")
+                    .resizable()
+                    .frame(width: 32, height: 32)
+                    .foregroundColor(Color("AppThemeGreen"))
+                    .background(Color.white)
+                    .cornerRadius(5)
+            } else {
+                Image(systemName: "heart")
+                    .foregroundColor(.white)
+                    .frame(width: 32, height: 32)
+                    .background(Color("AppThemeGreen"))
+                    .cornerRadius(5)
+            }
         }
     }
     
