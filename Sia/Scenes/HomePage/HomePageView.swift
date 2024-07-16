@@ -109,7 +109,11 @@ struct HomePageView: View {
                                     stockStatus: product.stockStatus,
                                     price: product.price,
                                     storeName: viewModel.getStoreName(for: product.storeId),
-                                    storeImageUrl: viewModel.getStoreImageURL(for: product.storeId)
+                                    storeImageUrl: viewModel.getStoreImageURL(for: product.storeId),
+                                    isFavorite: product.isFavorite,
+                                    onFavoriteTapped: {
+                                        viewModel.toggleFavorite(for: product)
+                                    }
                                 )
                             }
                         }

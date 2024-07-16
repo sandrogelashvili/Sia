@@ -115,4 +115,10 @@ class HomePageViewModel: ObservableObject {
     func getStoreImageURL(for storeId: String) -> String {
         return stores.first { $0.id == storeId }?.storeImageURL ?? ""
     }
+    
+    func toggleFavorite(for product: Product) {
+        var mutableProduct = product
+        FavoritesManager.shared.toggleFavorite(product: &mutableProduct, allProducts: &allProducts)
+        groupedSearchProductsByLocation()
+    }
 }
