@@ -7,8 +7,8 @@
 
 import UIKit
 
-class ProductListCell: UICollectionViewCell {
-    static let reuseIdentifier = "ProductListCell"
+class ProductCollectionViewCell: UICollectionViewCell {
+    static let reuseIdentifier = "ProductCollectionViewCell"
     
     private var productImageView: UIImageView = {
         let imageView = UIImageView()

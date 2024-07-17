@@ -7,32 +7,45 @@
 
 import UIKit
 
-final class StoresPageViewController: UIViewController {
-    
-    private var storesTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "მაღაზიები"
-        label.font = UIFont.boldSystemFont(ofSize: 24)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+class StoresPageViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    private let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 24, bottom: 20, right: 24)
+        layout.minimumLineSpacing = 16
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "BackgroundColor")
-        setUpUI()
-    }
-    
-    private func setUpUI() {
-        addStoresTitleLabel()
-    }
-    
-    private func addStoresTitleLabel() {
-        view.addSubview(storesTitleLabel)
+        view.backgroundColor = .white
+        view.addSubview(collectionView)
+        
         NSLayoutConstraint.activate([
-            storesTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            storesTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(StoreCollectionViewCell.self, forCellWithReuseIdentifier: StoreCollectionViewCell.reuseIdentifier)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StoreCollectionViewCell.reuseIdentifier, for: indexPath) as! StoreCollectionViewCell
+        cell.configure(with: Store(name: "Sample Store", storeImageURL: "https://example.com/icon.png"), dealBannerUrl: "https://example.com/banner.png")
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width - 48, height: 280)
     }
 }
 
