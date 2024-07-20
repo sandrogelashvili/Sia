@@ -15,6 +15,8 @@ struct ProductCell: View {
     let storeName: String
     let storeImageUrl: String
     let isFavorite: Bool
+    let onDeal: Bool
+    let newPrice: Double?
     let onFavoriteTapped: () -> Void
     
     var body: some View {
@@ -47,8 +49,13 @@ struct ProductCell: View {
                         }
                         .padding(.leading, -20)
                         
-                        priceLabel
-                            .padding(.top, 10)
+                        if onDeal, let newPrice = newPrice {
+                            priceWithDealLabel(originalPrice: price, newPrice: newPrice)
+                                .padding(.top, 10)
+                        } else {
+                            priceLabel
+                                .padding(.top, 10)
+                        }
                     }
                     Spacer()
                     favoriteButton
@@ -65,7 +72,6 @@ struct ProductCell: View {
         .shadow(radius: 1)
         .padding(5)
     }
-    
     
     private var productNameLabel: some View {
         Text(productName)
@@ -98,10 +104,9 @@ struct ProductCell: View {
     }
     
     private var priceLabel: some View {
-        Text(formattedPrice)
+        Text(formattedPrice(price))
             .foregroundColor(.black)
             .font(.system(size: 14, weight: .medium))
-        
     }
     
     private var favoriteButton: some View {
@@ -138,11 +143,6 @@ struct ProductCell: View {
         }
     }
     
-    private var formattedPrice: String {
-        let formatted = ProductCell.numberFormatter.string(from: NSNumber(value: price)) ?? "\(price)"
-        return formatted + "₾"
-    }
-    
     private static let numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -150,4 +150,22 @@ struct ProductCell: View {
         formatter.maximumFractionDigits = 2
         return formatter
     }()
+    
+    private func formattedPrice(_ price: Double) -> String {
+        let formatted = ProductCell.numberFormatter.string(from: NSNumber(value: price)) ?? "\(price)"
+        return formatted + "₾"
+    }
+    
+    private func priceWithDealLabel(originalPrice: Double, newPrice: Double) -> some View {
+        HStack {
+            Text(formattedPrice(originalPrice))
+                .foregroundColor(.gray)
+                .strikethrough()
+                .font(.system(size: 14, weight: .medium))
+            
+            Text(formattedPrice(newPrice))
+                .foregroundColor(.black)
+                .font(.system(size: 14, weight: .medium))
+        }
+    }
 }

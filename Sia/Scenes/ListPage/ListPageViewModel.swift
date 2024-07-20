@@ -34,15 +34,18 @@ final class ListPageViewModel {
     func addFavorite(product: Product) {
         if !favoriteProducts.contains(where: { $0.id == product.id }) {
             favoriteProducts.append(product)
+            refreshData()
         }
     }
 
     func removeFavorite(product: Product) {
         favoriteProducts.removeAll { $0.id == product.id }
+        refreshData()
     }
 
     func clearFavorites() {
         favoriteProducts.removeAll()
+        refreshData()
     }
 
     func refreshData() {

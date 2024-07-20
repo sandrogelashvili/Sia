@@ -20,6 +20,8 @@ struct Product: Identifiable, Decodable {
     let locationId: String
     let storeId: String
     var isFavorite: Bool
+    let onDeal: Bool?
+    let newPrice: Double?
     
     enum CodingKeys: String, CodingKey {
         case documentID
@@ -33,6 +35,8 @@ struct Product: Identifiable, Decodable {
         case locationId
         case storeId
         case isFavorite
+        case onDeal
+        case newPrice
     }
 
     init(from decoder: Decoder) throws {
@@ -48,5 +52,7 @@ struct Product: Identifiable, Decodable {
         locationId = try container.decode(String.self, forKey: .locationId)
         storeId = try container.decode(String.self, forKey: .storeId)
         isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
+        onDeal = try container.decodeIfPresent(Bool.self, forKey: .onDeal)
+        newPrice = try container.decodeIfPresent(Double.self, forKey: .newPrice)
     }
 }

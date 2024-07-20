@@ -14,6 +14,7 @@ class FirestoreManager: ObservableObject {
     @Published var stores: [Store] = []
     @Published var allProducts: [Product] = []
     @Published var locations: [Location] = []
+    @Published var deals: [DealsAndOffers] = []
     
     private var db = Firestore.firestore()
     
@@ -56,21 +57,53 @@ class FirestoreManager: ObservableObject {
         }
     }
     
-    func fetchStores() {
-        db.collection("stores")
-            .getDocuments { (snapshot, error) in
+    func fetchStores(completion: (() -> Void)? = nil) {
+        db.collection("stores").getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error fetching stores: \(error)")
+                completion?()
+                return
+            }
+            guard let documents = snapshot?.documents else {
+                print("No documents found")
+                completion?()
+                return
+            }
+            self.stores = documents.compactMap { doc -> Store? in
+                return try? doc.data(as: Store.self)
+            }
+            completion?()
+        }
+    }
+    
+    func fetchDealsAndOffers() {
+        var allDeals: [DealsAndOffers] = []
+        let dispatchGroup = DispatchGroup()
+        
+        for store in stores {
+            dispatchGroup.enter()
+            db.collection("stores").document(store.id!).collection("dealsAndOffers").getDocuments { (snapshot, error) in
                 if let error = error {
-                    print("Error fetching stores: \(error)")
+                    print("Error fetching deals for store \(store.name): \(error)")
+                    dispatchGroup.leave()
                     return
                 }
                 guard let documents = snapshot?.documents else {
-                    print("No documents found")
+                    print("No deals found for store \(store.name)")
+                    dispatchGroup.leave()
                     return
                 }
-                self.stores = documents.compactMap { doc -> Store? in
-                    return try? doc.data(as: Store.self)
+                let deals = documents.compactMap { doc -> DealsAndOffers? in
+                    return try? doc.data(as: DealsAndOffers.self)
                 }
+                allDeals.append(contentsOf: deals)
+                dispatchGroup.leave()
             }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.deals = allDeals
+        }
     }
     
     func fetchAllProducts() -> Future<[Product], Error> {

@@ -96,7 +96,7 @@ final class ListPageViewController: UIViewController {
         
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(ProductListCell.self, forCellWithReuseIdentifier: ProductListCell.reuseIdentifier)
+        collectionView.register(ProductCollectionViewCell.self, forCellWithReuseIdentifier: ProductCollectionViewCell.reuseIdentifier)
         collectionView.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderView.reuseIdentifier)
     }
     
@@ -125,7 +125,7 @@ extension ListPageViewController: UICollectionViewDataSource, UICollectionViewDe
         let products = viewModel.productsGrouped[key] ?? []
         let product = products[indexPath.item]
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductListCell.reuseIdentifier, for: indexPath) as! ProductListCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.reuseIdentifier, for: indexPath) as! ProductCollectionViewCell
         let storeName = viewModel.getStoreName(for: product.storeId)
         let storeImageUrl = viewModel.getStoreImageURL(for: product.storeId)
         cell.configure(with: product, storeName: storeName, storeImageUrl: storeImageUrl)
