@@ -111,6 +111,8 @@ struct HomePageView: View {
                                     storeName: viewModel.getStoreName(for: product.storeId),
                                     storeImageUrl: viewModel.getStoreImageURL(for: product.storeId),
                                     isFavorite: product.isFavorite,
+                                    onDeal: product.onDeal ?? false,
+                                    newPrice: product.newPrice,
                                     onFavoriteTapped: {
                                         viewModel.toggleFavorite(for: product)
                                     }

@@ -59,12 +59,36 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private var priceLabel: UILabel = {
+    private var priceStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.spacing = 0
+        stackView.alignment = .leading
+        return stackView
+    }()
+    
+    private var oldPriceLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .gray
+        label.attributedText = NSAttributedString(string: "10.0₾", attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+        return label
+    }()
+    
+    private var newPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         label.textColor = .black
         return label
+    }()
+    
+    private var spacerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     override init(frame: CGRect) {
@@ -87,7 +111,7 @@ class ProductCollectionViewCell: UICollectionViewCell {
         addStockStatusLabel()
         addStoreImageView()
         addStoreNameLabel()
-        addPriceLabel()
+        addPriceStackView()
     }
     
     private func addProductImageView() {
@@ -137,14 +161,20 @@ class ProductCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    private func addPriceLabel() {
-        contentView.addSubview(priceLabel)
+    private func addPriceStackView() {
+        contentView.addSubview(priceStackView)
         NSLayoutConstraint.activate([
-            priceLabel.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
-            priceLabel.trailingAnchor.constraint(equalTo: productNameLabel.trailingAnchor),
-            priceLabel.topAnchor.constraint(equalTo: storeImageView.bottomAnchor, constant: 4),
-            priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            priceStackView.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
+            priceStackView.trailingAnchor.constraint(equalTo: productNameLabel.trailingAnchor),
+            priceStackView.topAnchor.constraint(equalTo: storeImageView.bottomAnchor, constant: 4),
+            priceStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
+        
+        priceStackView.addArrangedSubview(oldPriceLabel)
+        priceStackView.addArrangedSubview(newPriceLabel)
+        priceStackView.addArrangedSubview(spacerView)
+        
+        spacerView.widthAnchor.constraint(equalToConstant: 102).isActive = true
     }
     
     private func loadImage(from url: URL, into imageView: UIImageView) {
@@ -163,7 +193,15 @@ class ProductCollectionViewCell: UICollectionViewCell {
         productNameLabel.text = product.name
         stockStatusLabel.text = product.stockStatus
         stockStatusLabel.textColor = getColorForStockStatus(product.stockStatus)
-        priceLabel.text = "\(product.price)₾"
+        
+        if product.onDeal == true, let newPrice = product.newPrice {
+            oldPriceLabel.text = "\(product.price)₾"
+            oldPriceLabel.isHidden = false
+            newPriceLabel.text = "\(newPrice)₾"
+        } else {
+            oldPriceLabel.isHidden = true
+            newPriceLabel.text = "\(product.price)₾"
+        }
         
         if let url = URL(string: product.productImageURL), UIApplication.shared.canOpenURL(url) {
             loadImage(from: url, into: productImageView)

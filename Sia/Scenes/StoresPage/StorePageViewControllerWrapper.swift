@@ -11,6 +11,6 @@ struct StorePageViewControllerWrapper: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> StoresPageViewController {
         return StoresPageViewController()
     }
-
+    
     func updateUIViewController(_ uiViewController: StoresPageViewController, context: Context) {}
 }

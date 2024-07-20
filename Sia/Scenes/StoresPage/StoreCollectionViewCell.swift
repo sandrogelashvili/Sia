@@ -7,8 +7,16 @@
 
 import UIKit
 
+protocol StoreCollectionViewCellDelegate: AnyObject {
+    func didTapStoreCell(store: Store)
+    func didTapBanner(for store: Store)
+}
+
 class StoreCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "StoreCollectionViewCell"
+    
+    weak var delegate: StoreCollectionViewCellDelegate?
+    private var store: Store?
     
     private var storeIconImage: UIImageView = {
         let image = UIImageView()
@@ -38,22 +46,20 @@ class StoreCollectionViewCell: UICollectionViewCell {
     private var dealBannerImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.contentMode = .scaleAspectFill
+        image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         image.layer.cornerRadius = 15
-        image.layer.borderColor = UIColor.lightGray.cgColor
-        image.layer.borderWidth = 0.5
         return image
     }()
     
-    private let topItemView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 15
-        view.layer.borderColor = UIColor.lightGray.cgColor
-        view.layer.borderWidth = 0.5
-        return view
+    private let topItemView: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 15
+        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.layer.borderWidth = 0.5
+        return button
     }()
     
     private let stackView: UIStackView = {
@@ -68,8 +74,8 @@ class StoreCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        
-        contentView.backgroundColor = .white
+        setupActions()
+        contentView.backgroundColor = UIColor(named: "BackgroundColor")
     }
     
     required init?(coder: NSCoder) {
@@ -97,11 +103,6 @@ class StoreCollectionViewCell: UICollectionViewCell {
     
     private func addTopItemView() {
         stackView.addArrangedSubview(topItemView)
-        NSLayoutConstraint.activate([
-            topItemView.heightAnchor.constraint(equalToConstant: 48),
-            topItemView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            topItemView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
     }
     
     private func addStoreIconImage() {
@@ -133,13 +134,29 @@ class StoreCollectionViewCell: UICollectionViewCell {
     private func addDealBannerImage() {
         stackView.addArrangedSubview(dealBannerImage)
         NSLayoutConstraint.activate([
-            dealBannerImage.heightAnchor.constraint(equalToConstant: 165),
-            dealBannerImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            dealBannerImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            dealBannerImage.heightAnchor.constraint(equalToConstant: 165)
         ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(bannerTapped))
+        dealBannerImage.addGestureRecognizer(tapGesture)
+        dealBannerImage.isUserInteractionEnabled = true
+    }
+    
+    private func setupActions() {
+        topItemView.addAction(UIAction(handler: { [weak self] _ in
+            guard let self = self, let store = self.store else { return }
+            self.delegate?.didTapStoreCell(store: store)
+        }), for: .touchUpInside)
+        
+    }
+    
+    @objc private func bannerTapped() {
+        guard let store = store else { return }
+        delegate?.didTapBanner(for: store)
     }
     
     func configure(with store: Store, dealBannerUrl: String) {
+        self.store = store
         storeNameLabel.text = store.name
         if let url = URL(string: store.storeImageURL) {
             loadImage(from: url, into: storeIconImage)
