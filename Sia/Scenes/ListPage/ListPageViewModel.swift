@@ -14,11 +14,11 @@ final class ListPageViewModel {
     private(set) var productsGrouped: [String: [Product]] = [:]
     private(set) var stores: [Store] = []
     private var firestoreManager: FirestoreManager
-
-        init(firestoreManager: FirestoreManager = FirestoreManager()) {
-            self.firestoreManager = firestoreManager
-            fetchStores()
-        }
+    
+    init(firestoreManager: FirestoreManager = FirestoreManager()) {
+        self.firestoreManager = firestoreManager
+        fetchStores()
+    }
     
     private func fetchStores() {
         firestoreManager.fetchStores { result in
@@ -30,29 +30,29 @@ final class ListPageViewModel {
             }
         }
     }
-
+    
     func addFavorite(product: Product) {
         if !favoriteProducts.contains(where: { $0.id == product.id }) {
             favoriteProducts.append(product)
             refreshData()
         }
     }
-
+    
     func removeFavorite(product: Product) {
         favoriteProducts.removeAll { $0.id == product.id }
         refreshData()
     }
-
+    
     func clearFavorites() {
         favoriteProducts.removeAll()
         refreshData()
     }
-
+    
     func refreshData() {
         productsGrouped = groupedFavoriteProducts()
         keys = Array(productsGrouped.keys).sorted()
     }
-
+    
     func groupedFavoriteProducts() -> [String: [Product]] {
         var groupedDict = [String: [Product]]()
         for product in favoriteProducts {
@@ -60,7 +60,7 @@ final class ListPageViewModel {
         }
         return groupedDict
     }
-
+    
     func getLocationName(for locationId: String) -> String {
         switch locationId {
         case "1":
@@ -75,11 +75,11 @@ final class ListPageViewModel {
             return "Unknown Location"
         }
     }
-
+    
     func getStoreName(for storeId: String) -> String {
         return stores.first(where: { $0.id == storeId })?.name ?? "Unknown Store"
     }
-
+    
     func getStoreImageURL(for storeId: String) -> String {
         return stores.first(where: { $0.id == storeId })?.storeImageURL ?? ""
     }

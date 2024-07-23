@@ -7,6 +7,11 @@
 
 import UIKit
 
+private enum Constants {
+    static let cornerRadius: CGFloat = 5
+    static let borderWidth: CGFloat = 0.5
+}
+
 final class ListPageViewController: UIViewController {
     
     private let viewModel = ListPageViewModel.shared
@@ -24,8 +29,8 @@ final class ListPageViewController: UIViewController {
         button.setTitle("სიის გასუფთავება", for: .normal)
         button.setTitleColor(.gray, for: .normal)
         button.backgroundColor = .white
-        button.layer.cornerRadius = 5
-        button.layer.borderWidth = 0.5
+        button.layer.cornerRadius = Constants.cornerRadius
+        button.layer.borderWidth = Constants.borderWidth
         button.layer.borderColor = UIColor.gray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -33,7 +38,7 @@ final class ListPageViewController: UIViewController {
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 16, right: 24)
+        layout.sectionInset = UIEdgeInsets(top: .zero, left: 24, bottom: 16, right: 24)
         layout.minimumLineSpacing = 16
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)

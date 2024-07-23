@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CategoryCellView: View {
+struct HomePageCategoryCell: View {
     let categoryName: String
     let imageURL: String
     let color: Color

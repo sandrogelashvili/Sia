@@ -27,6 +27,12 @@ class StoreCollectionViewCell: UICollectionViewCell {
         return image
     }()
     
+    private var storeIconActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
     private var storeNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -50,6 +56,12 @@ class StoreCollectionViewCell: UICollectionViewCell {
         image.clipsToBounds = true
         image.layer.cornerRadius = 15
         return image
+    }()
+    
+    private var dealBannerActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
     }()
     
     private let topItemView: UIButton = {
@@ -86,9 +98,11 @@ class StoreCollectionViewCell: UICollectionViewCell {
         addStackView()
         addTopItemView()
         addStoreIconImage()
+        addStoreIconActivityIndicator()
         addStoreNameLabel()
         addViewMoreLabel()
         addDealBannerImage()
+        addDealBannerActivityIndicator()
     }
     
     private func addStackView() {
@@ -112,6 +126,14 @@ class StoreCollectionViewCell: UICollectionViewCell {
             storeIconImage.centerYAnchor.constraint(equalTo: topItemView.centerYAnchor),
             storeIconImage.widthAnchor.constraint(equalToConstant: 32),
             storeIconImage.heightAnchor.constraint(equalToConstant: 32)
+        ])
+    }
+    
+    private func addStoreIconActivityIndicator() {
+        topItemView.addSubview(storeIconActivityIndicator)
+        NSLayoutConstraint.activate([
+            storeIconActivityIndicator.centerXAnchor.constraint(equalTo: storeIconImage.centerXAnchor),
+            storeIconActivityIndicator.centerYAnchor.constraint(equalTo: storeIconImage.centerYAnchor)
         ])
     }
     
@@ -142,6 +164,14 @@ class StoreCollectionViewCell: UICollectionViewCell {
         dealBannerImage.isUserInteractionEnabled = true
     }
     
+    private func addDealBannerActivityIndicator() {
+        dealBannerImage.addSubview(dealBannerActivityIndicator)
+        NSLayoutConstraint.activate([
+            dealBannerActivityIndicator.centerXAnchor.constraint(equalTo: dealBannerImage.centerXAnchor),
+            dealBannerActivityIndicator.centerYAnchor.constraint(equalTo: dealBannerImage.centerYAnchor)
+        ])
+    }
+    
     private func setupActions() {
         topItemView.addAction(UIAction(handler: { [weak self] _ in
             guard let self = self, let store = self.store else { return }
@@ -158,20 +188,18 @@ class StoreCollectionViewCell: UICollectionViewCell {
     func configure(with store: Store, dealBannerUrl: String) {
         self.store = store
         storeNameLabel.text = store.name
-        if let url = URL(string: store.storeImageURL) {
-            loadImage(from: url, into: storeIconImage)
-        }
-        if let url = URL(string: dealBannerUrl) {
-            loadImage(from: url, into: dealBannerImage)
-        }
+        loadImage(from: store.storeImageURL, into: storeIconImage, with: storeIconActivityIndicator)
+        loadImage(from: dealBannerUrl, into: dealBannerImage, with: dealBannerActivityIndicator)
     }
     
-    private func loadImage(from url: URL, into imageView: UIImageView) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data)
-            }
-        }.resume()
+    private func loadImage(from urlString: String, into imageView: UIImageView, with activityIndicator: UIActivityIndicatorView) {
+        guard let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) else {
+            print("Invalid image URL: \(urlString)")
+            return
+        }
+        activityIndicator.startAnimating()
+        ImageLoader.shared.loadImage(from: url, into: imageView) {
+            activityIndicator.stopAnimating()
+        }
     }
 }
