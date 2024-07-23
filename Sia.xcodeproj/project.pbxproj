@@ -31,6 +31,8 @@
 		0871632B2C3C13C500AF59DF /* OnBoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0871632A2C3C13C500AF59DF /* OnBoardingView.swift */; };
 		0871632D2C3C13DD00AF59DF /* OnBoardingReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0871632C2C3C13DD00AF59DF /* OnBoardingReusableView.swift */; };
 		087163302C3C40D400AF59DF /* HomePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0871632F2C3C40D400AF59DF /* HomePageView.swift */; };
+		08736DBE2C5016B500A94E37 /* Localized.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08736DBC2C5016B500A94E37 /* Localized.strings */; };
+		08736DC22C50223500A94E37 /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08736DC12C50223500A94E37 /* Strings+Generated.swift */; };
 		0877D4E62C4556C80073EAF4 /* StorePageViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0877D4E52C4556C80073EAF4 /* StorePageViewControllerWrapper.swift */; };
 		0877D4E82C4558110073EAF4 /* ListPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0877D4E72C4558110073EAF4 /* ListPageViewModel.swift */; };
 		0877D4EB2C455CBE0073EAF4 /* ProductCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0877D4EA2C455CBE0073EAF4 /* ProductCollectionViewCell.swift */; };
@@ -85,6 +87,8 @@
 		0871632A2C3C13C500AF59DF /* OnBoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingView.swift; sourceTree = "<group>"; };
 		0871632C2C3C13DD00AF59DF /* OnBoardingReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingReusableView.swift; sourceTree = "<group>"; };
 		0871632F2C3C40D400AF59DF /* HomePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageView.swift; sourceTree = "<group>"; };
+		08736DBD2C5016B500A94E37 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localized.strings; sourceTree = "<group>"; };
+		08736DC12C50223500A94E37 /* Strings+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Strings+Generated.swift"; sourceTree = "<group>"; };
 		0877D4E52C4556C80073EAF4 /* StorePageViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePageViewControllerWrapper.swift; sourceTree = "<group>"; };
 		0877D4E72C4558110073EAF4 /* ListPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPageViewModel.swift; sourceTree = "<group>"; };
 		0877D4EA2C455CBE0073EAF4 /* ProductCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -191,12 +195,14 @@
 		086A83542C35C77300735935 /* Sia */ = {
 			isa = PBXGroup;
 			children = (
+				08736DC12C50223500A94E37 /* Strings+Generated.swift */,
 				087FFD1E2C42E43300F945F7 /* Extenstions */,
 				087163262C3C0D5100AF59DF /* Supporting */,
 				08658FBC2C3EDE8000F11477 /* Models */,
 				0877D4EE2C456A080073EAF4 /* SharedManagers */,
 				087163272C3C0D6100AF59DF /* Scenes */,
 				087163282C3C0D6B00AF59DF /* Resources */,
+				08736DBC2C5016B500A94E37 /* Localized.strings */,
 			);
 			path = Sia;
 			sourceTree = "<group>";
@@ -419,6 +425,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08736DBE2C5016B500A94E37 /* Localized.strings in Resources */,
 				086A835F2C35C77400735935 /* Assets.xcassets in Resources */,
 				086A83622C35C77400735935 /* Base in Resources */,
 				08D848DF2C3D530C0016C4B5 /* GoogleService-Info.plist in Resources */,
@@ -473,6 +480,7 @@
 				086B160B2C4941970057366B /* StoresPageViewModel.swift in Sources */,
 				08885B722C4007FC004C2ED3 /* ProductCell.swift in Sources */,
 				08658FC02C3EDFE600F11477 /* HomePageViewModel.swift in Sources */,
+				08736DC22C50223500A94E37 /* Strings+Generated.swift in Sources */,
 				0870725D2C4EBAF300F0F76E /* ImageLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -486,6 +494,14 @@
 				086A83612C35C77400735935 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		08736DBC2C5016B500A94E37 /* Localized.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				08736DBD2C5016B500A94E37 /* en */,
+			);
+			name = Localized.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

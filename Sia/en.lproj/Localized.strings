@@ -1,0 +1,10 @@
+/* 
+  Localized.strings
+  Sia
+
+  Created by Sandro Gelashvili on 23.07.24.
+  
+*/
+
+// MARK: - OnBoarding
+"onboarding.title_for_ob_page.text" = "პროდუქტების ძიების მარტივი გზა";

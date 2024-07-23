@@ -17,7 +17,7 @@ struct OnBoardingView: View {
         } else {
             if currentPage == 1 {
                 OnBoardingReusablePage(
-                    titleForOBPage: "პროდუქტების ძიების მარტივი გზა",
+                    titleForOBPage: LocalizedStrings.Onboarding.TitleForObPage.text,
                     imageForOBPage: "Onboarding21",
                     descriptionForOBPage: "მოძებნე სასურველი პროდუქტი, გაფილტრე კატეგორიების ან მაღაზიების მიხედვით",
                     totalPages: totalPages,
