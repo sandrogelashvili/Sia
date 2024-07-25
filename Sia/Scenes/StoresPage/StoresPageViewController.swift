@@ -9,6 +9,16 @@ import UIKit
 import Combine
 import SwiftUI
 
+private enum StoresPageConstants {
+    static let collectionViewTopInset: CGFloat = 20
+    static let collectionViewLeftInset: CGFloat = 24
+    static let collectionViewBottomInset: CGFloat = 20
+    static let collectionViewRightInset: CGFloat = 24
+    static let collectionViewMinimumLineSpacing: CGFloat = 16
+    static let collectionViewItemHeight: CGFloat = 280
+    static let collectionViewHorizontalPadding: CGFloat = 48
+}
+
 final class StoresPageViewController: UIViewController {
     
     private let viewModel = StoresPageViewModel()
@@ -16,8 +26,8 @@ final class StoresPageViewController: UIViewController {
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 24, bottom: 20, right: 24)
-        layout.minimumLineSpacing = 16
+        layout.sectionInset = UIEdgeInsets(top: StoresPageConstants.collectionViewTopInset, left: StoresPageConstants.collectionViewLeftInset, bottom: StoresPageConstants.collectionViewBottomInset, right: StoresPageConstants.collectionViewRightInset)
+        layout.minimumLineSpacing = StoresPageConstants.collectionViewMinimumLineSpacing
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
@@ -25,7 +35,7 @@ final class StoresPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = UIColor.red
         setupCollectionView()
         bindViewModel()
     }
@@ -98,7 +108,8 @@ extension StoresPageViewController: UICollectionViewDataSource, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width - 48, height: 280)
+        let width = collectionView.bounds.width - StoresPageConstants.collectionViewHorizontalPadding
+        return CGSize(width: width, height: StoresPageConstants.collectionViewItemHeight)
     }
 }
 

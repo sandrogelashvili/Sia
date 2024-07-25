@@ -7,13 +7,25 @@
 
 import UIKit
 
+private enum Constants {
+    static let titleLabelFontSize: CGFloat = 18
+    static let titleLabelLeadingPadding: CGFloat = 16
+    static let titleLabelTrailingPadding: CGFloat = -16
+    static let titleLabelTopPadding: CGFloat = 8
+    static let titleLabelBottomPadding: CGFloat = -8
+    
+    enum ConstantsStrings {
+        static let cellIdentifier: String = "HeaderView"
+    }
+}
+
 final class SectionHeaderView: UICollectionReusableView {
-    static let reuseIdentifier = "HeaderView"
+    static let reuseIdentifier = Constants.ConstantsStrings.cellIdentifier
     
     private var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.font = UIFont.boldSystemFont(ofSize: Constants.titleLabelFontSize)
         label.textColor = .black
         return label
     }()
@@ -30,10 +42,10 @@ final class SectionHeaderView: UICollectionReusableView {
     private func setupUI() {
         addSubview(titleLabel)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.titleLabelLeadingPadding),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.titleLabelTrailingPadding),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constants.titleLabelTopPadding),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constants.titleLabelBottomPadding)
         ])
     }
     

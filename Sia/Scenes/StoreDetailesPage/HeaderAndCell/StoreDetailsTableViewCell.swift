@@ -7,21 +7,35 @@
 
 import UIKit
 
-class StoreDetailsTableViewCell: UITableViewCell {
+private enum StoreDetailsTableViewCellConstants {
+    static let locationLabelFontSize: CGFloat = 14
+    static let openingHoursLabelFontSize: CGFloat = 14
+    static let openingHoursLabelTextColor: UIColor = .gray
+    static let mapButtonFontSize: CGFloat = 12
+    static let stackViewSpacing: CGFloat = 16
+    static let stackViewLeadingPadding: CGFloat = 20
+    static let stackViewTrailingPadding: CGFloat = -20
+    static let stackViewTopPadding: CGFloat = 10
+    static let stackViewBottomPadding: CGFloat = -10
+}
+
+import UIKit
+
+final class StoreDetailsTableViewCell: UITableViewCell {
     static let reuseIdentifier = "StoreDetailsTableViewCell"
     
     private let locationLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: StoreDetailsTableViewCellConstants.locationLabelFontSize, weight: .semibold)
         return label
     }()
     
     private let openingHoursLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .gray
+        label.font = UIFont.systemFont(ofSize: StoreDetailsTableViewCellConstants.openingHoursLabelFontSize, weight: .medium)
+        label.textColor = StoreDetailsTableViewCellConstants.openingHoursLabelTextColor
         label.textAlignment = .center
         return label
     }()
@@ -29,8 +43,8 @@ class StoreDetailsTableViewCell: UITableViewCell {
     private let mapButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("რუკაზე ნახვა", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        button.setTitle(L10n.Storedetailstableviewcell.mapButtonTitle, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: StoreDetailsTableViewCellConstants.mapButtonFontSize)
         return button
     }()
     
@@ -38,7 +52,7 @@ class StoreDetailsTableViewCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = 16
+        stackView.spacing = StoreDetailsTableViewCellConstants.stackViewSpacing
         stackView.alignment = .center
         return stackView
     }()
@@ -62,10 +76,10 @@ class StoreDetailsTableViewCell: UITableViewCell {
     
     private func setUpConstraints() {
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: StoreDetailsTableViewCellConstants.stackViewLeadingPadding),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: StoreDetailsTableViewCellConstants.stackViewTrailingPadding),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: StoreDetailsTableViewCellConstants.stackViewTopPadding),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: StoreDetailsTableViewCellConstants.stackViewBottomPadding)
         ])
     }
     

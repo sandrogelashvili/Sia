@@ -8,7 +8,12 @@
 import UIKit
 import Combine
 
-class StoreDetailsViewController: UIViewController {
+private enum StoreDetailsViewControllerConstants {
+    static let headerViewHeight: CGFloat = 72
+    static let tableViewRowHeight: CGFloat = 60
+}
+
+final class StoreDetailsViewController: UIViewController {
     private var viewModel: StoreDetailsViewModel
     private var cancellables = Set<AnyCancellable>()
     
@@ -30,7 +35,7 @@ class StoreDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.white
         setupUI()
         bindViewModel()
     }
@@ -43,7 +48,7 @@ class StoreDetailsViewController: UIViewController {
     private func setupTableHeaderView() {
         let headerView = StoreDetailsHeaderView(viewModel: viewModel)
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 72)
+        headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: StoreDetailsViewControllerConstants.headerViewHeight)
         tableView.tableHeaderView = headerView
     }
     
@@ -85,6 +90,6 @@ extension StoreDetailsViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return StoreDetailsViewControllerConstants.tableViewRowHeight
     }
 }

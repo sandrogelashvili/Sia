@@ -169,7 +169,7 @@ class FirestoreManager: ObservableObject {
         }
     }
     
-    func fetchLocationsForListPage(completion: @escaping (Result<[Location], Error>) -> Void) {
+    func fetchLocationsForUIKit(completion: @escaping (Result<[Location], Error>) -> Void) {
         db.collection("stores").getDocuments { (snapshot, error) in
             if let error = error {
                 completion(.failure(error))

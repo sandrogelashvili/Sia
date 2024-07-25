@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+private enum SearchResultsConstants {
+    static let horizontalPadding: CGFloat = 10
+    static let sectionHeaderPadding: CGFloat = 10
+    static let gridItemFixedSize: CGFloat = 165
+    static let gridItemSpacing: CGFloat = 20
+    static let gridSpacing: CGFloat = 5
+}
+
 struct SearchResultsView: View {
     @ObservedObject var viewModel: SearchResultsViewModel
     
@@ -17,7 +25,7 @@ struct SearchResultsView: View {
                     SearchResultSectionView(location: location, viewModel: viewModel)
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, SearchResultsConstants.horizontalPadding)
         }
     }
 }
@@ -27,11 +35,11 @@ struct SearchResultSectionView: View {
     @ObservedObject var viewModel: SearchResultsViewModel
     
     var body: some View {
-        Section(header: Text(location).font(.headline).padding()) {
+        Section(header: Text(location).font(.headline).padding(SearchResultsConstants.sectionHeaderPadding)) {
             LazyVGrid(columns: [
-                GridItem(.fixed(165), spacing: 20),
-                GridItem(.fixed(165), spacing: 20)
-            ], spacing: 5) {
+                GridItem(.fixed(SearchResultsConstants.gridItemFixedSize), spacing: SearchResultsConstants.gridItemSpacing),
+                GridItem(.fixed(SearchResultsConstants.gridItemFixedSize), spacing: SearchResultsConstants.gridItemSpacing)
+            ], spacing: SearchResultsConstants.gridSpacing) {
                 ForEach(viewModel.groupedSearchProducts[location] ?? []) { product in
                     ProductCell(
                         productName: product.name,

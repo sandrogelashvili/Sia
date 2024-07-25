@@ -7,6 +7,24 @@
 
 import SwiftUI
 
+private enum OBReusablePageConstants {
+    static let titleFont: String = "Helvetica"
+    static let titleFontSize: CGFloat = 30
+    static let descriptionFontSize: CGFloat = 14
+    static let animationDuration: Double = 1.0
+    static let animationDelay: Double = 0.3
+    static let animationOpacity: Double = 1.0
+    static let nextButtonHeight: CGFloat = 58.5
+    static let nextButtonCornerRadius: CGFloat = 15
+    static let nextButtonBottomPadding: CGFloat = 30
+    static let indicatorSize: CGFloat = 8
+    static let titleBottomPadding: CGFloat = 10
+    static let descriptionBottomPadding: CGFloat = 30
+    static let elementOffset: CGFloat = 20
+    static let horizontalPadding: CGFloat = 75
+    static let gradientOpacity: Double = 0.8
+}
+
 struct OnBoardingReusablePage: View {
     var titleForOBPage: String
     var imageForOBPage: String
@@ -24,9 +42,9 @@ struct OnBoardingReusablePage: View {
                 .gesture(
                     DragGesture()
                         .onEnded { value in
-                            if value.translation.width < 0 {
+                            if value.translation.width < .zero {
                                 nextPage()
-                            } else if value.translation.width > 0 {
+                            } else if value.translation.width > .zero {
                                 previousPage()
                             }
                         }
@@ -36,33 +54,33 @@ struct OnBoardingReusablePage: View {
                 Spacer()
                 
                 textForTitle
-                    .padding(.bottom, 10)
-                    .opacity(animate ? 1 : 0)
-                    .offset(y: animate ? 0 : 20)
-                    .animation(.easeInOut(duration: 1.0), value: animate)
+                    .padding(.bottom, OBReusablePageConstants.titleBottomPadding)
+                    .opacity(animate ? OBReusablePageConstants.animationOpacity : .zero)
+                    .offset(y: animate ? .zero : OBReusablePageConstants.elementOffset)
+                    .animation(.easeInOut(duration: OBReusablePageConstants.animationDuration), value: animate)
                 
                 textForDescription
-                    .padding(.bottom, 30)
-                    .opacity(animate ? 1 : 0)
-                    .offset(y: animate ? 0 : 20)
-                    .animation(.easeInOut(duration: 1.0).delay(0.3), value: animate)
+                    .padding(.bottom, OBReusablePageConstants.descriptionBottomPadding)
+                    .opacity(animate ? OBReusablePageConstants.animationOpacity : .zero)
+                    .offset(y: animate ? .zero : OBReusablePageConstants.elementOffset)
+                    .animation(.easeInOut(duration: OBReusablePageConstants.animationDuration).delay(OBReusablePageConstants.animationDelay), value: animate)
                 
                 HStack {
                     indicatorBar
                         .padding(.vertical)
-                        .opacity(animate ? 1 : 0)
-                        .offset(y: animate ? 0 : 20)
-                        .animation(.easeInOut(duration: 1.0).delay(0.6), value: animate)
+                        .opacity(animate ? OBReusablePageConstants.animationOpacity : .zero)
+                        .offset(y: animate ? .zero : OBReusablePageConstants.elementOffset)
+                        .animation(.easeInOut(duration: OBReusablePageConstants.animationDuration).delay(OBReusablePageConstants.animationDelay * 2), value: animate)
                     
                     Spacer()
                 }
                 
                 nextButton
-                    .opacity(animate ? 1 : 0)
-                    .offset(y: animate ? 0 : 20)
-                    .animation(.easeInOut(duration: 1.0).delay(0.9), value: animate)
+                    .opacity(animate ? OBReusablePageConstants.animationOpacity : .zero)
+                    .offset(y: animate ? .zero : OBReusablePageConstants.elementOffset)
+                    .animation(.easeInOut(duration: OBReusablePageConstants.animationDuration).delay(OBReusablePageConstants.animationDelay * 3), value: animate)
             }
-            .padding(.horizontal, 75)
+            .padding(.horizontal, OBReusablePageConstants.horizontalPadding)
         }
         .onAppear {
             animate = true
@@ -75,9 +93,9 @@ struct OnBoardingReusablePage: View {
                 .resizable()
                 .scaledToFill()
                 .scaleEffect(animate ? 1 : 1.1)
-                .animation(.easeInOut(duration: 1.0), value: animate)
+                .animation(.easeInOut(duration: OBReusablePageConstants.animationDuration), value: animate)
             LinearGradient(
-                gradient: Gradient(colors: [.black.opacity(0.8), .clear]),
+                gradient: Gradient(colors: [.black.opacity(OBReusablePageConstants.gradientOpacity), .clear]),
                 startPoint: .bottom,
                 endPoint: .top
             )
@@ -86,13 +104,13 @@ struct OnBoardingReusablePage: View {
     
     private var textForTitle: some View {
         Text(titleForOBPage)
-            .font(.custom("Helvetica", size: 30))
+            .font(.custom(OBReusablePageConstants.titleFont, size: OBReusablePageConstants.titleFontSize))
             .foregroundColor(.white)
     }
     
     private var textForDescription: some View {
         Text(descriptionForOBPage)
-            .font(.custom("Helvetica", size: 14))
+            .font(.custom(OBReusablePageConstants.titleFont, size: OBReusablePageConstants.descriptionFontSize))
             .foregroundStyle(.white)
     }
     
@@ -103,11 +121,11 @@ struct OnBoardingReusablePage: View {
             Text(isLastPage ? "დაწყება" : "შემდეგი")
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
-                .frame(height: 58.5)
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .background(Color("AppThemeGreen"))
-                .clipShape(RoundedRectangle(cornerRadius: 15))
-                .padding(.bottom)
+                .frame(height: OBReusablePageConstants.nextButtonHeight)
+                .frame(minWidth: .zero, maxWidth: .infinity)
+                .background(Color.appThemeGreenSwiftUI)
+                .clipShape(RoundedRectangle(cornerRadius: OBReusablePageConstants.nextButtonCornerRadius))
+                .padding(.bottom, OBReusablePageConstants.nextButtonBottomPadding)
         }
     }
     
@@ -123,7 +141,7 @@ struct OnBoardingReusablePage: View {
     private func indicator(for index: Int) -> some View {
         Circle()
             .fill(index == currentPage ? Color.white : Color.gray)
-            .frame(width: 8, height: 8)
+            .frame(width: OBReusablePageConstants.indicatorSize, height: OBReusablePageConstants.indicatorSize)
     }
     
     private func nextPage() {

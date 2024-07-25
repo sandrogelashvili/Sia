@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+private enum HomePageCategoryConstants {
+    static let roundedRectCornerRadius: CGFloat = 10
+    static let cellHeight: CGFloat = 180
+    static let imageHeight: CGFloat = 130
+}
+
 struct HomePageCategoryCell: View {
     let categoryName: String
     let imageURL: String
@@ -14,16 +20,16 @@ struct HomePageCategoryCell: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: HomePageCategoryConstants.roundedRectCornerRadius)
                 .fill(color)
-                .frame(height: 180)
+                .frame(height: HomePageCategoryConstants.cellHeight)
             
             VStack {
                 Text(categoryName)
                     .font(.headline)
                     .foregroundColor(.white)
                 
-                AsyncImageView(imageURL: imageURL, height: 130)
+                AsyncImageView(imageURL: imageURL, height: HomePageCategoryConstants.imageHeight)
             }
         }
     }

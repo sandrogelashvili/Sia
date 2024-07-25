@@ -15,4 +15,6 @@ struct Location: Identifiable, Decodable {
     let openingHours: String
     let storeId: String
     let mapURL: String
+    let latitude: Double?
+    let longitude: Double?
 }

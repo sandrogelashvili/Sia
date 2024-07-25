@@ -12,7 +12,7 @@ struct ProductsOnSaleView: View {
     
     var body: some View {
         VStack {
-            Text("აქცია \(viewModel.store.name)ში") // ეს შესაცვლელია
+            Text(L10n.ProductsOnSale.title) // ეს შესაცვლელია
                 .font(.title)
                 .padding()
             

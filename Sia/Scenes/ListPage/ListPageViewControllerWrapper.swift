@@ -11,6 +11,6 @@ struct ListPageViewControllerWrapper: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> ListPageViewController {
         return ListPageViewController()
     }
-
+    
     func updateUIViewController(_ uiViewController: ListPageViewController, context: Context) {}
 }

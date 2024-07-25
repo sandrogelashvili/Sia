@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+private enum HomePageConstants {
+    static let leadingPadding: CGFloat = 20
+    static let categoryTitleFontSize: CGFloat = 20
+    static let categoryTitleFontWeight: Font.Weight = .semibold
+    static let gridSpacing: CGFloat = 10
+    static let horizontalPadding: CGFloat = 10
+    static let filterViewWidthRatio: CGFloat = 0.8
+    static let filterViewCornerRadius: CGFloat = 16
+    static let filterViewShadowRadius: CGFloat = 5
+    static let overlayOpacity: Double = 0.4
+}
+
 struct HomePageView: View {
     @StateObject private var homePageViewModel = HomePageViewModel()
     @StateObject private var searchResultsViewModel = SearchResultsViewModel()
@@ -34,35 +46,29 @@ struct HomePageView: View {
                     
                     if searchText.isEmpty {
                         VStack(alignment: .leading) {
-                            Text("აირჩიეთ კატეგორია")
-                                .padding(.leading, 20)
-                                .font(.system(size: 20, weight: .semibold))
+                            Text(L10n.Homepage.selectCategory)
+                                .padding(.leading, HomePageConstants.leadingPadding)
+                                .font(.system(size: HomePageConstants.categoryTitleFontSize, weight: HomePageConstants.categoryTitleFontWeight))
                             
                             ScrollView {
-                                LazyVGrid(columns: [GridItem(.flexible()),
-                                                    GridItem(.flexible())],
-                                          spacing: 10) {
+                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: HomePageConstants.gridSpacing) {
                                     ForEach(homePageViewModel.categories) { category in
-                                        NavigationLink(destination: CategoryProductsView(category: category,
-                                                                                         selectedStoreId: homePageViewModel.selectedStoreId)) {
-                                            HomePageCategoryCell(categoryName: category.name,
-                                                                 imageURL: category.categoryImageURL,
-                                                                 color: Color(hex: category.backgroundColor) ?? .gray)
+                                        NavigationLink(destination: CategoryProductsView(category: category, selectedStoreId: homePageViewModel.selectedStoreId)) {
+                                            HomePageCategoryCell(categoryName: category.name, imageURL: category.categoryImageURL, color: Color(hex: category.backgroundColor) ?? .gray)
                                         }
                                     }
                                 }
-                                          .padding(.horizontal)
+                                .padding(.horizontal, HomePageConstants.horizontalPadding)
                             }
                         }
                     } else {
                         SearchResultsView(viewModel: searchResultsViewModel)
                     }
                 }
-                .background(Color("BackgroundColor"))
+                .background(Color.gray400SwiftUI)
                 
                 if isFilterViewPresented {
-                    FilterViewOverlay(isFilterViewPresented: $isFilterViewPresented,
-                                      selectedStoreId: $homePageViewModel.selectedStoreId)
+                    FilterViewOverlay(isFilterViewPresented: $isFilterViewPresented, selectedStoreId: $homePageViewModel.selectedStoreId)
                 }
             }
         }
@@ -75,7 +81,7 @@ struct HomePageView: View {
         var body: some View {
             GeometryReader { geometry in
                 ZStack(alignment: .trailing) {
-                    Color.black.opacity(0.4)
+                    Color.black.opacity(HomePageConstants.overlayOpacity)
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
@@ -84,15 +90,14 @@ struct HomePageView: View {
                         }
                     
                     FilterView(isPresented: $isFilterViewPresented, selectedStoreId: $selectedStoreId)
-                        .frame(width: geometry.size.width * 0.8, height: geometry.size.height)
+                        .frame(width: geometry.size.width * HomePageConstants.filterViewWidthRatio, height: geometry.size.height)
                         .background(Color.white)
-                        .cornerRadius(16)
-                        .shadow(radius: 5)
-                        .offset(x: isFilterViewPresented ? 0 : geometry.size.width)
+                        .cornerRadius(HomePageConstants.filterViewCornerRadius)
+                        .shadow(radius: HomePageConstants.filterViewShadowRadius)
+                        .offset(x: isFilterViewPresented ? .zero : geometry.size.width)
                 }
             }
             .edgesIgnoringSafeArea(.all)
         }
     }
 }
-

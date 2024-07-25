@@ -7,9 +7,21 @@
 
 import UIKit
 
-private enum Constants {
+private enum ListPageConstants {
     static let cornerRadius: CGFloat = 5
     static let borderWidth: CGFloat = 0.5
+    static let titleLabelFontSize: CGFloat = 24
+    static let titleLabelTopPadding: CGFloat = 20
+    static let titleLabelLeadingPadding: CGFloat = 20
+    static let clearButtonTopPadding: CGFloat = 20
+    static let clearButtonTrailingPadding: CGFloat = -20
+    static let clearButtonWidth: CGFloat = 150
+    static let collectionViewTopPadding: CGFloat = 20
+    static let sectionHeaderHeight: CGFloat = 40
+    static let itemHeight: CGFloat = 120
+    static let sectionInset: CGFloat = 24
+    static let minimumLineSpacing: CGFloat = 16
+    static let collectionViewBottomPadding: CGFloat = 16
 }
 
 final class ListPageViewController: UIViewController {
@@ -18,19 +30,19 @@ final class ListPageViewController: UIViewController {
     
     private var listTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "სია"
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.text = L10n.Listpage.title
+        label.font = UIFont.boldSystemFont(ofSize: ListPageConstants.titleLabelFontSize)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private var clearButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("სიის გასუფთავება", for: .normal)
+        button.setTitle(L10n.Listpage.clearButton, for: .normal)
         button.setTitleColor(.gray, for: .normal)
         button.backgroundColor = .white
-        button.layer.cornerRadius = Constants.cornerRadius
-        button.layer.borderWidth = Constants.borderWidth
+        button.layer.cornerRadius = ListPageConstants.cornerRadius
+        button.layer.borderWidth = ListPageConstants.borderWidth
         button.layer.borderColor = UIColor.gray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -38,8 +50,8 @@ final class ListPageViewController: UIViewController {
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: .zero, left: 24, bottom: 16, right: 24)
-        layout.minimumLineSpacing = 16
+        layout.sectionInset = UIEdgeInsets(top: .zero, left: ListPageConstants.sectionInset, bottom: ListPageConstants.collectionViewBottomPadding, right: ListPageConstants.sectionInset)
+        layout.minimumLineSpacing = ListPageConstants.minimumLineSpacing
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -50,7 +62,7 @@ final class ListPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "BackgroundColor")
+        view.backgroundColor = UIColor .gray400UIKit
         setUpUI()
         addActionForClearButton()
         addCollectionView()
@@ -75,17 +87,17 @@ final class ListPageViewController: UIViewController {
     private func addListTitleLabel() {
         view.addSubview(listTitleLabel)
         NSLayoutConstraint.activate([
-            listTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            listTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+            listTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: ListPageConstants.titleLabelTopPadding),
+            listTitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: ListPageConstants.titleLabelLeadingPadding)
         ])
     }
     
     private func addClearButton() {
         view.addSubview(clearButton)
         NSLayoutConstraint.activate([
-            clearButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            clearButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            clearButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 150)
+            clearButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: ListPageConstants.clearButtonTopPadding),
+            clearButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: ListPageConstants.clearButtonTrailingPadding),
+            clearButton.widthAnchor.constraint(greaterThanOrEqualToConstant: ListPageConstants.clearButtonWidth)
         ])
     }
     
@@ -93,7 +105,7 @@ final class ListPageViewController: UIViewController {
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: listTitleLabel.bottomAnchor, constant: 20),
+            collectionView.topAnchor.constraint(equalTo: listTitleLabel.bottomAnchor, constant: ListPageConstants.collectionViewTopPadding),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -139,12 +151,12 @@ extension ListPageViewController: UICollectionViewDataSource, UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width - 48
-        return CGSize(width: width, height: 120)
+        let width = collectionView.bounds.width - (ListPageConstants.sectionInset * 2)
+        return CGSize(width: width, height: ListPageConstants.itemHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 40)
+        return CGSize(width: collectionView.bounds.width, height: ListPageConstants.sectionHeaderHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {

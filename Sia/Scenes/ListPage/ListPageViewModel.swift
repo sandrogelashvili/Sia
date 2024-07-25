@@ -7,6 +7,13 @@
 
 import Foundation
 
+private enum ListPageViewModelConstants {
+    static let location1 = "1"
+    static let location2 = "2"
+    static let location3 = "3"
+    static let location4 = "4"
+}
+
 final class ListPageViewModel {
     static let shared = ListPageViewModel()
     private(set) var favoriteProducts: [Product] = []
@@ -63,21 +70,21 @@ final class ListPageViewModel {
     
     func getLocationName(for locationId: String) -> String {
         switch locationId {
-        case "1":
-            return "პ.ქავთარაძის 40"
-        case "2":
-            return "ალ.ყაზბეგის 38"
-        case "3":
-            return "ს.ეულის 10"
-        case "4":
-            return "ალ.ყაზბეგის 32"
+        case ListPageViewModelConstants.location1:
+            return L10n.Listpage.location1
+        case ListPageViewModelConstants.location2:
+            return L10n.Listpage.location2
+        case ListPageViewModelConstants.location3:
+            return L10n.Listpage.location3
+        case ListPageViewModelConstants.location4:
+            return L10n.Listpage.location4
         default:
-            return "Unknown Location"
+            return L10n.Listpage.unknownLocation
         }
     }
     
     func getStoreName(for storeId: String) -> String {
-        return stores.first(where: { $0.id == storeId })?.name ?? "Unknown Store"
+        return stores.first(where: { $0.id == storeId })?.name ?? L10n.Listpage.unknownStore
     }
     
     func getStoreImageURL(for storeId: String) -> String {

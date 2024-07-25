@@ -18,23 +18,29 @@ struct TabBarView: View {
         TabView {
             HomePageView()
                 .tabItem {
-                    Image("Home")
-                    Text("მთავარი")
+                    Image .iconTabBarHome
+                    Text(L10n.Tabbar.home)
                 }
             
             ListPageViewControllerWrapper()
-                 .tabItem {
-                     Image("List")
-                     Text("პროდუქტების სია")
-                 }
+                .tabItem {
+                    Image .iconTabBarList
+                    Text(L10n.Tabbar.list)
+                }
             
             StorePageViewControllerWrapper()
                 .tabItem {
-                    Image("Store")
-                    Text("მაღაზიები")
+                    Image .iconTabBarStore
+                    Text(L10n.Tabbar.store)
+                }
+            
+            MapViewControllerWrapper()
+                .tabItem {
+                    Image(systemName: "location")
+                    Text("რუკა")
                 }
         }
-        .accentColor(Color("AppThemeGreen"))
+        .accentColor(Color.appThemeGreenSwiftUI)
     }
 }
 

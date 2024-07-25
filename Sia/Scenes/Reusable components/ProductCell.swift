@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+private enum Constants {
+    static let strokeOpacity: Double = 0.5
+    static let shadowRadius: CGFloat = 1
+    static let productNameFontSize: CGFloat = 14
+    static let stockStatusFontSize: CGFloat = 10
+    static let stockStatusWidth: CGFloat = 60
+    static let storeNameFontSize: CGFloat = 12
+    static let priceFontSize: CGFloat = 14
+    static let cellWidth: CGFloat = 170
+    static let cellHeight: CGFloat = 230
+    static let productImageHeight: CGFloat = 110
+}
+
 struct ProductCell: View {
     let productName: String
     let productImageURL: String
@@ -21,12 +34,12 @@ struct ProductCell: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.5), lineWidth: 0.5)
+            RoundedRectangle(cornerRadius: Grid.CornerRadius.textField)
+                .stroke(Color.gray.opacity(Constants.strokeOpacity), lineWidth: Grid.BorderWidth.thin)
             
             VStack {
                 productNameLabel
-                    .padding(.top)
+                    .padding(.top, Grid.Spacing.s)
                 
                 ZStack {
                     productImageView
@@ -35,78 +48,81 @@ struct ProductCell: View {
                         Spacer()
                         
                         stockStatusLabel
-                            .offset(y: -40)
+                            .offset(y: -Grid.Spacing.m)
                     }
                 }
                 Spacer()
-                HStack (alignment: .bottom){
-                    VStack {
-                        HStack {
-                            storeImageForCell
-                            
-                            storeNameForCell
-                                .offset(y: 10.0)
-                        }
-                        .padding(.leading, -20)
-                        
-                        if onDeal, let newPrice = newPrice {
-                            priceWithDealLabel(originalPrice: price, newPrice: newPrice)
-                                .padding(.top, 10)
-                        } else {
-                            priceLabel
-                                .padding(.top, 10)
-                        }
-                    }
-                    Spacer()
-                    favoriteButton
-                        .padding(.trailing, 10)
-                }
-                .padding(.leading, 10)
-                .padding(.bottom, 10)
                 
+                VStack(alignment: .leading) {
+                    HStack {
+                        storeImageForCell
+                        
+                        storeNameForCell
+                            .offset(y: Grid.Spacing.s)
+                    }
+                    .padding(.leading, -Grid.Spacing.xs)
+                    
+                    HStack(alignment: .bottom) {
+                        VStack {
+                            
+                            if onDeal, let newPrice = newPrice {
+                                priceWithDealLabel(originalPrice: price, newPrice: newPrice)
+                                    .padding(.top, Grid.Spacing.s)
+                            } else {
+                                priceLabel
+                                    .padding(.top, Grid.Spacing.s)
+                            }
+                        }
+                        Spacer()
+                        favoriteButton
+                            .padding(.trailing, Grid.Spacing.s)
+                    }
+                    .padding(.leading, Grid.Spacing.s)
+                    .padding(.bottom, Grid.Spacing.s)
+                }
             }
         }
         .background(Color.white)
-        .frame(width: 170, height: 230)
-        .cornerRadius(8)
-        .shadow(radius: 1)
-        .padding(5)
+        .frame(width: Constants.cellWidth, height: Constants.cellHeight)
+        .cornerRadius(Grid.CornerRadius.textField)
+        .shadow(radius: Constants.shadowRadius)
+        .padding(Grid.Spacing.xs2)
     }
     
     private var productNameLabel: some View {
         Text(productName)
             .foregroundColor(.black)
-            .font(.system(size: 14, weight: .semibold))
+            .font(.system(size: Constants.productNameFontSize, weight: .semibold))
             .multilineTextAlignment(.center)
     }
     
     private var productImageView: some View {
-        AsyncImageView(imageURL: productImageURL, height: 110)
+        AsyncImageView(imageURL: productImageURL, height: Constants.productImageHeight)
     }
     
     private var stockStatusLabel: some View {
         Text(stockStatus)
             .foregroundColor(stockStatusColor)
-            .font(.system(size: 10, weight: .semibold))
-            .frame(width: 60, height: 20)
-            .background(Color.gray.opacity(0.2))
-            .cornerRadius(5)
+            .font(.system(size: Constants.stockStatusFontSize, weight: .semibold))
+            .frame(width: Constants.stockStatusWidth, height: Grid.Spacing.l)
+            .background(Color.gray.opacity(Grid.BorderWidth.extraThin))
+            .cornerRadius(Grid.CornerRadius.textField)
     }
     
     private var storeImageForCell: some View {
-        AsyncImageView(imageURL: storeImageUrl, height: 20)
+        AsyncImageView(imageURL: storeImageUrl, height: Grid.Spacing.l)
     }
     
     private var storeNameForCell: some View {
         Text(storeName)
             .foregroundColor(.gray)
-            .font(.system(size: 12))
+            .font(.system(size: Constants.storeNameFontSize))
     }
     
     private var priceLabel: some View {
         Text(formattedPrice(price))
             .foregroundColor(.black)
-            .font(.system(size: 14, weight: .medium))
+            .font(.system(size: Constants.priceFontSize, weight: .medium))
     }
     
     private var favoriteButton: some View {
@@ -114,29 +130,29 @@ struct ProductCell: View {
             onFavoriteTapped()
         }) {
             if isFavorite {
-                Image(systemName: "minus.square")
+                Image .iconProductCellMinus
                     .resizable()
-                    .frame(width: 32, height: 32)
-                    .foregroundColor(Color("AppThemeGreen"))
+                    .frame(width: Grid.Spacing.xl3, height: Grid.Spacing.xl3)
+                    .foregroundColor(Color.appThemeGreenSwiftUI)
                     .background(Color.white)
-                    .cornerRadius(5)
+                    .cornerRadius(Grid.CornerRadius.textField)
             } else {
-                Image(systemName: "heart")
+                Image .iconProductCellHeart
                     .foregroundColor(.white)
-                    .frame(width: 32, height: 32)
-                    .background(Color("AppThemeGreen"))
-                    .cornerRadius(5)
+                    .frame(width: Grid.Spacing.xl3, height: Grid.Spacing.xl3)
+                    .background(Color.appThemeGreenSwiftUI)
+                    .cornerRadius(Grid.CornerRadius.textField)
             }
         }
     }
     
     private var stockStatusColor: Color {
         switch stockStatus {
-        case "მარაგშია":
-            return Color("AppThemeGreen")
-        case "მარაგი ამოიწურა":
+        case L10n.Productcell.Stockstatus.inStock:
+            return Color.appThemeGreenSwiftUI
+        case L10n.Productcell.Stockstatus.limitedStock:
             return .gray
-        case "მარაგი იწურება":
+        case L10n.Productcell.Stockstatus.outOfStock:
             return .orange
         default:
             return .gray
@@ -161,11 +177,11 @@ struct ProductCell: View {
             Text(formattedPrice(originalPrice))
                 .foregroundColor(.gray)
                 .strikethrough()
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: Constants.priceFontSize, weight: .medium))
             
             Text(formattedPrice(newPrice))
                 .foregroundColor(.black)
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: Constants.priceFontSize, weight: .medium))
         }
     }
 }
