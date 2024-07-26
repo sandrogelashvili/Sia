@@ -15,12 +15,14 @@ class CategoryProductsViewModel: ObservableObject {
     
     let category: Category
     private let selectedStoreId: String?
+    private let selectedPriceSortOption: PriceSortOption?
     private let firestoreManager = FirestoreManager()
     private var cancellables = Set<AnyCancellable>()
     
-    init(category: Category, selectedStoreId: String?) {
+    init(category: Category, selectedStoreId: String?, selectedPriceSortOption: PriceSortOption?) {
         self.category = category
         self.selectedStoreId = selectedStoreId
+        self.selectedPriceSortOption = selectedPriceSortOption
         fetchStoresAndProducts()
     }
     
@@ -77,7 +79,19 @@ class CategoryProductsViewModel: ObservableObject {
         if let storeId = selectedStoreId {
             filteredProducts = filteredProducts.filter { $0.storeId == storeId }
         }
+        applyPriceSortOption(to: &filteredProducts)
         return filteredProducts
+    }
+    
+    private func applyPriceSortOption(to products: inout [Product]) {
+        guard let selectedPriceSortOption = selectedPriceSortOption else { return }
+        
+        switch selectedPriceSortOption {
+        case .lowToHigh:
+            products.sort { $0.price < $1.price }
+        case .highToLow:
+            products.sort { $0.price > $1.price }
+        }
     }
     
     private func groupProductsByLocation() {

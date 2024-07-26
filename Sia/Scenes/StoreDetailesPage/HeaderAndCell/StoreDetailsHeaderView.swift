@@ -8,22 +8,33 @@
 import UIKit
 import Combine
 
-class StoreDetailsHeaderView: UIView {
+private enum Constants {
+    static let nameLabelFontSize: CGFloat = 22
+    static let nameLabelLeadingPadding: CGFloat = 20
+}
+
+final class StoreDetailsHeaderView: UIView {
     private var cancellables = Set<AnyCancellable>()
     
     private let storeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 16
+        imageView.layer.cornerRadius = Grid.CornerRadius.filter
         imageView.clipsToBounds = true
         return imageView
+    }()
+    
+    private let storeImageActivityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
     }()
     
     private let storeNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: Constants.nameLabelFontSize, weight: .semibold)
         return label
     }()
     
@@ -39,16 +50,25 @@ class StoreDetailsHeaderView: UIView {
     
     private func setupUI() {
         addStoreImageView()
+        addStoreImageActivityIndicator()
         addStoreNameLabel()
     }
     
     private func addStoreImageView() {
         addSubview(storeImageView)
         NSLayoutConstraint.activate([
-            storeImageView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            storeImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            storeImageView.widthAnchor.constraint(equalToConstant: 32),
-            storeImageView.heightAnchor.constraint(equalToConstant: 32)
+            storeImageView.topAnchor.constraint(equalTo: topAnchor, constant: Grid.Spacing.l),
+            storeImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Grid.Spacing.l),
+            storeImageView.widthAnchor.constraint(equalToConstant:Grid.Spacing.xl3),
+            storeImageView.heightAnchor.constraint(equalToConstant:Grid.Spacing.xl3)
+        ])
+    }
+    
+    private func addStoreImageActivityIndicator() {
+        addSubview(storeImageActivityIndicator)
+        NSLayoutConstraint.activate([
+            storeImageActivityIndicator.centerXAnchor.constraint(equalTo: storeImageView.centerXAnchor),
+            storeImageActivityIndicator.centerYAnchor.constraint(equalTo: storeImageView.centerYAnchor)
         ])
     }
     
@@ -56,17 +76,21 @@ class StoreDetailsHeaderView: UIView {
         addSubview(storeNameLabel)
         NSLayoutConstraint.activate([
             storeNameLabel.centerYAnchor.constraint(equalTo: storeImageView.centerYAnchor),
-            storeNameLabel.leadingAnchor.constraint(equalTo: storeImageView.trailingAnchor, constant: 20),
-            storeNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
+            storeNameLabel.leadingAnchor.constraint(equalTo: storeImageView.trailingAnchor, constant: Constants.nameLabelLeadingPadding),
+            storeNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Grid.Spacing.l)
         ])
     }
     
     private func bindViewModel(_ viewModel: StoreDetailsViewModel) {
         viewModel.$storeImageURL
             .receive(on: DispatchQueue.main)
-            .sink { [weak storeImageView] url in
+            .sink { [weak self] url in
+                guard let self = self else { return }
                 if let url = URL(string: url) {
-                    self.loadImage(from: url, into: storeImageView!)
+                    self.storeImageActivityIndicator.startAnimating()
+                    ImageLoader.shared.loadImage(from: url, into: self.storeImageView) {
+                        self.storeImageActivityIndicator.stopAnimating()
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -77,14 +101,5 @@ class StoreDetailsHeaderView: UIView {
                 storeNameLabel?.text = name
             }
             .store(in: &cancellables)
-    }
-    
-    private func loadImage(from url: URL, into imageView: UIImageView) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else { return }
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data)
-            }
-        }.resume()
     }
 }

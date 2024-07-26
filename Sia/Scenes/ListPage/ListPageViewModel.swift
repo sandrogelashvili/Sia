@@ -7,6 +7,13 @@
 
 import Foundation
 
+private enum ListPageViewModelConstants {
+    static let location1 = "1"
+    static let location2 = "2"
+    static let location3 = "3"
+    static let location4 = "4"
+}
+
 final class ListPageViewModel {
     static let shared = ListPageViewModel()
     private(set) var favoriteProducts: [Product] = []
@@ -14,11 +21,14 @@ final class ListPageViewModel {
     private(set) var productsGrouped: [String: [Product]] = [:]
     private(set) var stores: [Store] = []
     private var firestoreManager: FirestoreManager
-
-        init(firestoreManager: FirestoreManager = FirestoreManager()) {
-            self.firestoreManager = firestoreManager
-            fetchStores()
-        }
+    
+    private let favoritesKey = "favoriteProducts"
+    
+    init(firestoreManager: FirestoreManager = FirestoreManager()) {
+        self.firestoreManager = firestoreManager
+        fetchStores()
+        loadFavoriteProducts()
+    }
     
     private func fetchStores() {
         firestoreManager.fetchStores { result in
@@ -30,57 +40,79 @@ final class ListPageViewModel {
             }
         }
     }
-
+    
     func addFavorite(product: Product) {
         if !favoriteProducts.contains(where: { $0.id == product.id }) {
             favoriteProducts.append(product)
+            saveFavoriteProducts()
             refreshData()
         }
     }
-
+    
     func removeFavorite(product: Product) {
         favoriteProducts.removeAll { $0.id == product.id }
+        saveFavoriteProducts()
         refreshData()
     }
-
+    
     func clearFavorites() {
         favoriteProducts.removeAll()
+        saveFavoriteProducts()
         refreshData()
     }
-
+    
     func refreshData() {
         productsGrouped = groupedFavoriteProducts()
         keys = Array(productsGrouped.keys).sorted()
     }
-
-    func groupedFavoriteProducts() -> [String: [Product]] {
+    
+    private func groupedFavoriteProducts() -> [String: [Product]] {
         var groupedDict = [String: [Product]]()
         for product in favoriteProducts {
             groupedDict[product.locationId, default: []].append(product)
         }
         return groupedDict
     }
-
+    
     func getLocationName(for locationId: String) -> String {
         switch locationId {
-        case "1":
-            return "პ.ქავთარაძის 40"
-        case "2":
-            return "ალ.ყაზბეგის 38"
-        case "3":
-            return "ს.ეულის 10"
-        case "4":
-            return "ალ.ყაზბეგის 32"
+        case ListPageViewModelConstants.location1:
+            return L10n.ListPage.location1
+        case ListPageViewModelConstants.location2:
+            return L10n.ListPage.location2
+        case ListPageViewModelConstants.location3:
+            return L10n.ListPage.location3
+        case ListPageViewModelConstants.location4:
+            return L10n.ListPage.location4
         default:
-            return "Unknown Location"
+            return L10n.ListPage.unknownLocation
         }
     }
-
+    
     func getStoreName(for storeId: String) -> String {
-        return stores.first(where: { $0.id == storeId })?.name ?? "Unknown Store"
+        return stores.first(where: { $0.id == storeId })?.name ?? L10n.ListPage.unknownStore
     }
-
+    
     func getStoreImageURL(for storeId: String) -> String {
         return stores.first(where: { $0.id == storeId })?.storeImageURL ?? ""
+    }
+    
+    private func saveFavoriteProducts() {
+        do {
+            let data = try JSONEncoder().encode(favoriteProducts)
+            UserDefaults.standard.set(data, forKey: favoritesKey)
+        } catch {
+            print("Failed to save favorite products: \(error)")
+        }
+    }
+    
+    private func loadFavoriteProducts() {
+        guard let data = UserDefaults.standard.data(forKey: favoritesKey) else { return }
+        do {
+            favoriteProducts = try JSONDecoder().decode([Product].self, from: data)
+            refreshData()
+        } catch {
+            print("Failed to load favorite products: \(error)")
+        }
     }
 }

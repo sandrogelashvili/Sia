@@ -1,0 +1,74 @@
+/*
+ Localized.strings
+ Sia
+ 
+ Created by Sandro Gelashvili on 23.07.24.
+ 
+ */
+
+// MARK: - SearchBarFilterView
+"search_bar.filter_view.search_placeholder" = "ძებნა";
+"search_bar.filter_view.clear" = "clear";
+
+// MARK: - ProductCell
+"product_cell.stock_status.in_stock" = "მარაგშია";
+"product_cell.stock_status.out_of_stock" = "მარაგი ამოიწურა";
+"product_cell.stock_status.limited_stock" = "მარაგი იწურება";
+
+// MARK: - OnBoardingPage1
+"onboarding.title_for_ob_page1.text" = "პროდუქტების ძიების მარტივი გზა";
+"onboarding.description_for_ob_page1.text" = "მოძებნე სასურველი პროდუქტი, გაფილტრე კატეგორიების ან მაღაზიების მიხედვით";
+
+// MARK: - OnBoardingPage2
+"onboarding.title_for_ob_page2.text" = "შექმენი შენი სია";
+"onboarding.description_for_ob_page2.text" = "შეადარეთ ფასები და შექმენით პერსონალური პროდუქტების სია მარტივად";
+
+// MARK: - OnBoardingPage3
+"onboarding.title_for_ob_page3.text" = "დაზოგე ფული და დრო";
+"onboarding.description_for_ob_page3.text" = "იხილეთ ინფორმაცია მაღაზიების მიმდინარე შეთავაზებების შესახებ";
+
+// MARK: - OnBoardingReusableView
+"onboarding.button.start" = "დაწყება";
+"onboarding.button.next" = "შემდეგი";
+
+// MARK: - TabBarView
+"tabbar.home" = "მთავარი";
+"tabbar.list" = "პროდუქტების სია";
+"tabbar.store" = "მაღაზიები";
+"tabbar.locationsmap" = "რუკა";
+
+// MARK: - HomePageView
+"homepage.select_category" = "აირჩიეთ კატეგორია";
+
+// MARK: - FilterView
+"filter_view.by_stores" = "მაღაზიების მიხედვით";
+"filter_view.by_price" = "ფასის მიხედვით";
+"filter_view.high_to_low_price" = "კლებადობით";
+"filter_view.low_to_high_price" = "ზრდადობით";
+
+// MARK: - ListPageViewController
+"list_page.title" = "სია";
+"list_page.clear_button" = "სიის გასუფთავება";
+"list_page.placeholder_view.label" = "სია ცარიელია";
+
+// MARK: - ListPageViewModel
+"list_page.location1" = "პ.ქავთარაძის 40";
+"list_page.location2" = "ალ.ყაზბეგის 38";
+"list_page.location3" = "ს.ეულის 10";
+"list_page.location4" = "ალ.ყაზბეგის 32";
+"list_page.unknown_location" = "Unknown Location";
+"list_page.unknown_store" = "Unknown Store";
+
+// MARK: - StoreCollectionViewCell
+"store_collection_view_cell.locations" = "ლოკაციები";
+"store_collection_view_cell.view_products" = "პროდუქტების ნახვა";
+
+// MARK: - StoreDetailsTableViewCell
+"store_details_table_view_cell.map_button_title" = "რუკაზე ნახვა";
+
+// MARK: - ProductsOnSaleView
+"products_on_sale.title" = "აქცია";
+
+// MARK: - MapViewController
+"map.search_bar.placeholder" = "ძებნა";
+"map.search_bar.for_key_value" = "searchField";

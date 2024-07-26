@@ -7,13 +7,21 @@
 
 import UIKit
 
+private enum Constants {
+    static let titleLabelFontSize: CGFloat = 18
+    
+    enum ConstantsStrings {
+        static let cellIdentifier: String = "HeaderView"
+    }
+}
+
 final class SectionHeaderView: UICollectionReusableView {
-    static let reuseIdentifier = "HeaderView"
+    static let reuseIdentifier = Constants.ConstantsStrings.cellIdentifier
     
     private var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.font = UIFont.boldSystemFont(ofSize: Constants.titleLabelFontSize)
         label.textColor = .black
         return label
     }()
@@ -30,10 +38,10 @@ final class SectionHeaderView: UICollectionReusableView {
     private func setupUI() {
         addSubview(titleLabel)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Grid.Spacing.m),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Grid.Spacing.m),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Grid.Spacing.xs),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Grid.Spacing.xs)
         ])
     }
     

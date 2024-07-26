@@ -17,24 +17,23 @@ struct AsyncImageView: View {
             case .empty:
                 ProgressView()
                     .frame(height: height)
-                    .frame(height: height)
-                    .padding(.leading, 16)
-                    .padding(.bottom, -20)
+                    .padding(.leading, Grid.Spacing.m)
+                    .padding(.bottom, -Grid.Spacing.l)
             case .success(let image):
                 image
                     .resizable()
                     .scaledToFit()
                     .frame(height: height)
-                    .padding(.leading, 16)
-                    .padding(.bottom, -20)
+                    .padding(.leading, Grid.Spacing.m)
+                    .padding(.bottom, -Grid.Spacing.l)
             case .failure:
-                Image(systemName: "photo")
+                Image .loaderPhoto
                     .resizable()
                     .scaledToFit()
                     .frame(height: height)
                     .foregroundColor(.gray)
-                    .padding(.leading, 16)
-                    .padding(.bottom, -20)
+                    .padding(.leading, Grid.Spacing.m)
+                    .padding(.bottom, -Grid.Spacing.l)
             @unknown default:
                 EmptyView()
             }
