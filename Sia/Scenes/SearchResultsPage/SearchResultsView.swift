@@ -7,12 +7,9 @@
 
 import SwiftUI
 
-private enum SearchResultsConstants {
-    static let horizontalPadding: CGFloat = 10
-    static let sectionHeaderPadding: CGFloat = 10
+private enum Constants {
+    static let sectionHeaderFontSize: CGFloat = 18
     static let gridItemFixedSize: CGFloat = 165
-    static let gridItemSpacing: CGFloat = 20
-    static let gridSpacing: CGFloat = 5
 }
 
 struct SearchResultsView: View {
@@ -25,7 +22,7 @@ struct SearchResultsView: View {
                     SearchResultSectionView(location: location, viewModel: viewModel)
                 }
             }
-            .padding(.horizontal, SearchResultsConstants.horizontalPadding)
+            .padding(.horizontal, Grid.Spacing.s)
         }
     }
 }
@@ -34,12 +31,15 @@ struct SearchResultSectionView: View {
     let location: String
     @ObservedObject var viewModel: SearchResultsViewModel
     
+    private var gridColumns: [GridItem] {
+        [GridItem(.fixed(Constants.gridItemFixedSize), spacing: Grid.Spacing.l),
+         GridItem(.fixed(Constants.gridItemFixedSize), spacing: Grid.Spacing.l)]
+    }
+    
     var body: some View {
-        Section(header: Text(location).font(.headline).padding(SearchResultsConstants.sectionHeaderPadding)) {
-            LazyVGrid(columns: [
-                GridItem(.fixed(SearchResultsConstants.gridItemFixedSize), spacing: SearchResultsConstants.gridItemSpacing),
-                GridItem(.fixed(SearchResultsConstants.gridItemFixedSize), spacing: SearchResultsConstants.gridItemSpacing)
-            ], spacing: SearchResultsConstants.gridSpacing) {
+        Section(header: sectionHeader) {
+            LazyVGrid(columns: gridColumns,
+                      spacing: Grid.Spacing.xs) {
                 ForEach(viewModel.groupedSearchProducts[location] ?? []) { product in
                     ProductCell(
                         productName: product.name,
@@ -59,5 +59,11 @@ struct SearchResultSectionView: View {
             }
             Divider()
         }
+    }
+    
+    private var sectionHeader: some View {
+        Text(location)
+            .font(.system(size: Constants.sectionHeaderFontSize))
+            .padding(Grid.Spacing.s)
     }
 }

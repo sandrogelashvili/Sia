@@ -12,25 +12,19 @@ protocol StoreCollectionViewCellDelegate: AnyObject {
     func didTapBanner(for store: Store)
 }
 
-private enum StoreCollectionViewCellConstants {
-    static let storeIconCornerRadius: CGFloat = 16
-    static let storeIconWidth: CGFloat = 32
-    static let storeIconHeight: CGFloat = 32
-    static let storeIconLeadingPadding: CGFloat = 24
+private enum Constants {
     static let storeNameLabelFontSize: CGFloat = 20
-    static let storeNameLabelLeadingPadding: CGFloat = 11
     static let viewMoreLabelFontSize: CGFloat = 14
-    static let viewMoreLabelTrailingPadding: CGFloat = -24
     static let dealBannerHeight: CGFloat = 165
-    static let topItemViewCornerRadius: CGFloat = 15
-    static let topItemViewBorderWidth: CGFloat = 0.5
-    static let stackViewSpacing: CGFloat = 16
     static let dealBannerTextFontSize: CGFloat = 14
-    static let dealBannerTextPadding: CGFloat = 8
+    
+    enum ConstantsStrings {
+        static let reuseIdentifier: String = "StoreCollectionViewCell"
+    }
 }
 
 final class StoreCollectionViewCell: UICollectionViewCell {
-    static let reuseIdentifier = "StoreCollectionViewCell"
+    static let reuseIdentifier = Constants.ConstantsStrings.reuseIdentifier
     
     weak var delegate: StoreCollectionViewCellDelegate?
     private var store: Store?
@@ -39,7 +33,7 @@ final class StoreCollectionViewCell: UICollectionViewCell {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
-        image.layer.cornerRadius = StoreCollectionViewCellConstants.storeIconCornerRadius
+        image.layer.cornerRadius = Grid.Spacing.m
         image.clipsToBounds = true
         return image
     }()
@@ -53,15 +47,15 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private var storeNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: StoreCollectionViewCellConstants.storeNameLabelFontSize, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: Constants.storeNameLabelFontSize, weight: .semibold)
         return label
     }()
     
     private var viewMoreLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: StoreCollectionViewCellConstants.viewMoreLabelFontSize)
-        label.text = L10n.Storecollectionviewcell.locations
+        label.font = UIFont.systemFont(ofSize: Constants.viewMoreLabelFontSize)
+        label.text = L10n.StoreCollectionViewCell.locations
         label.textColor = .gray
         return label
     }()
@@ -69,9 +63,8 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private var dealBannerImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-//        image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
-        image.layer.cornerRadius = StoreCollectionViewCellConstants.topItemViewCornerRadius
+        image.layer.cornerRadius = Grid.CornerRadius.filter
         return image
     }()
     
@@ -85,9 +78,9 @@ final class StoreCollectionViewCell: UICollectionViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .white
-        button.layer.cornerRadius = StoreCollectionViewCellConstants.topItemViewCornerRadius
+        button.layer.cornerRadius = Grid.CornerRadius.filter
         button.layer.borderColor = UIColor.lightGray.cgColor
-        button.layer.borderWidth = StoreCollectionViewCellConstants.topItemViewBorderWidth
+        button.layer.borderWidth = Grid.BorderWidth.thin
         return button
     }()
     
@@ -95,7 +88,7 @@ final class StoreCollectionViewCell: UICollectionViewCell {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
-        stack.spacing = StoreCollectionViewCellConstants.stackViewSpacing
+        stack.spacing = Grid.Spacing.m
         stack.alignment = .fill
         return stack
     }()
@@ -103,9 +96,9 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private let dealBannerTextLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: StoreCollectionViewCellConstants.dealBannerTextFontSize, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: Constants.dealBannerTextFontSize, weight: .bold)
         label.textColor = UIColor.white
-        label.text = L10n.Storecollectionviewcell.viewProducts
+        label.text = L10n.StoreCollectionViewCell.viewProducts
         return label
     }()
     
@@ -150,10 +143,10 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private func addStoreIconImage() {
         topItemView.addSubview(storeIconImage)
         NSLayoutConstraint.activate([
-            storeIconImage.leadingAnchor.constraint(equalTo: topItemView.leadingAnchor, constant: StoreCollectionViewCellConstants.storeIconLeadingPadding),
+            storeIconImage.leadingAnchor.constraint(equalTo: topItemView.leadingAnchor, constant: Grid.Spacing.xl),
             storeIconImage.centerYAnchor.constraint(equalTo: topItemView.centerYAnchor),
-            storeIconImage.widthAnchor.constraint(equalToConstant: StoreCollectionViewCellConstants.storeIconWidth),
-            storeIconImage.heightAnchor.constraint(equalToConstant: StoreCollectionViewCellConstants.storeIconHeight)
+            storeIconImage.widthAnchor.constraint(equalToConstant: Grid.Spacing.xl3),
+            storeIconImage.heightAnchor.constraint(equalToConstant: Grid.Spacing.xl3)
         ])
     }
     
@@ -168,7 +161,7 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private func addStoreNameLabel() {
         topItemView.addSubview(storeNameLabel)
         NSLayoutConstraint.activate([
-            storeNameLabel.leadingAnchor.constraint(equalTo: storeIconImage.trailingAnchor, constant: StoreCollectionViewCellConstants.storeNameLabelLeadingPadding),
+            storeNameLabel.leadingAnchor.constraint(equalTo: storeIconImage.trailingAnchor, constant: Grid.Spacing.s),
             storeNameLabel.centerYAnchor.constraint(equalTo: storeIconImage.centerYAnchor)
         ])
     }
@@ -176,7 +169,7 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private func addViewMoreLabel() {
         topItemView.addSubview(viewMoreLabel)
         NSLayoutConstraint.activate([
-            viewMoreLabel.trailingAnchor.constraint(equalTo: topItemView.trailingAnchor, constant: StoreCollectionViewCellConstants.viewMoreLabelTrailingPadding),
+            viewMoreLabel.trailingAnchor.constraint(equalTo: topItemView.trailingAnchor, constant: -Grid.Spacing.xl),
             viewMoreLabel.centerYAnchor.constraint(equalTo: storeIconImage.centerYAnchor)
         ])
     }
@@ -184,7 +177,7 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private func addDealBannerImage() {
         stackView.addArrangedSubview(dealBannerImage)
         NSLayoutConstraint.activate([
-            dealBannerImage.heightAnchor.constraint(equalToConstant: StoreCollectionViewCellConstants.dealBannerHeight),
+            dealBannerImage.heightAnchor.constraint(equalToConstant: Constants.dealBannerHeight),
             dealBannerImage.topAnchor.constraint(equalTo: topItemView.bottomAnchor, constant: 80)
         ])
         
@@ -204,8 +197,8 @@ final class StoreCollectionViewCell: UICollectionViewCell {
     private func addDealBannerTextLabel() {
         dealBannerImage.addSubview(dealBannerTextLabel)
         NSLayoutConstraint.activate([
-            dealBannerTextLabel.bottomAnchor.constraint(equalTo: dealBannerImage.bottomAnchor, constant: -StoreCollectionViewCellConstants.dealBannerTextPadding),
-            dealBannerTextLabel.trailingAnchor.constraint(equalTo: dealBannerImage.trailingAnchor, constant: -StoreCollectionViewCellConstants.dealBannerTextPadding)
+            dealBannerTextLabel.bottomAnchor.constraint(equalTo: dealBannerImage.bottomAnchor, constant: -Grid.Spacing.xs),
+            dealBannerTextLabel.trailingAnchor.constraint(equalTo: dealBannerImage.trailingAnchor, constant: -Grid.Spacing.xs)
         ])
     }
     

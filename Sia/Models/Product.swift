@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestoreSwift
 
-struct Product: Identifiable, Decodable {
+struct Product: Identifiable, Codable {
     @DocumentID var documentID: String?
     let id: String
     let name: String
@@ -38,7 +38,7 @@ struct Product: Identifiable, Decodable {
         case onDeal
         case newPrice
     }
-
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         documentID = try container.decodeIfPresent(String.self, forKey: .documentID)
@@ -54,5 +54,22 @@ struct Product: Identifiable, Decodable {
         isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
         onDeal = try container.decodeIfPresent(Bool.self, forKey: .onDeal)
         newPrice = try container.decodeIfPresent(Double.self, forKey: .newPrice)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(documentID, forKey: .documentID)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(price, forKey: .price)
+        try container.encode(productImageURL, forKey: .productImageURL)
+        try container.encode(stockStatus, forKey: .stockStatus)
+        try container.encode(weight, forKey: .weight)
+        try container.encode(categoryId, forKey: .categoryId)
+        try container.encode(locationId, forKey: .locationId)
+        try container.encode(storeId, forKey: .storeId)
+        try container.encode(isFavorite, forKey: .isFavorite)
+        try container.encode(onDeal, forKey: .onDeal)
+        try container.encode(newPrice, forKey: .newPrice)
     }
 }

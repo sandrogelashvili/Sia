@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-private enum StoreDetailsViewControllerConstants {
+private enum Constants {
     static let headerViewHeight: CGFloat = 72
     static let tableViewRowHeight: CGFloat = 60
 }
@@ -48,7 +48,7 @@ final class StoreDetailsViewController: UIViewController {
     private func setupTableHeaderView() {
         let headerView = StoreDetailsHeaderView(viewModel: viewModel)
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: StoreDetailsViewControllerConstants.headerViewHeight)
+        headerView.frame = CGRect(x: .zero, y: .zero, width: view.frame.width, height: Constants.headerViewHeight)
         tableView.tableHeaderView = headerView
     }
     
@@ -90,6 +90,6 @@ extension StoreDetailsViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return StoreDetailsViewControllerConstants.tableViewRowHeight
+        return Constants.tableViewRowHeight
     }
 }

@@ -14,6 +14,6 @@ struct MapViewControllerWrapper: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: MapViewController, context: Context) {
-       
+        
     }
 }

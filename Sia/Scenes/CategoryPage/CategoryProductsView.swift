@@ -7,28 +7,24 @@
 
 import SwiftUI
 
-private enum CategoryProductsConstants {
-    static let gridItemFixedSize: CGFloat = 165
-    static let gridItemSpacing: CGFloat = 20
-    static let gridSpacing: CGFloat = 5
-    static let sectionHeaderFontSize: CGFloat = 25
-    static let sectionHeaderPaddingVertical: CGFloat = 10
-    static let sectionPaddingBottom: CGFloat = 10
-    static let viewPadding: CGFloat = 10
+private enum Constants {
+    static let gridItemFixedSize: CGFloat = 166
+    static let sectionHeaderFontSize: CGFloat = 24
 }
 
 struct CategoryProductsView: View {
     @StateObject private var viewModel: CategoryProductsViewModel
     private var gridColumns: [GridItem] {
-        [GridItem(.fixed(CategoryProductsConstants.gridItemFixedSize),
-                  spacing: CategoryProductsConstants.gridItemSpacing),
-         GridItem(.fixed(CategoryProductsConstants.gridItemFixedSize),
-                  spacing: CategoryProductsConstants.gridItemSpacing)]
+        [GridItem(.fixed(Constants.gridItemFixedSize),
+                  spacing: Grid.Spacing.l),
+         GridItem(.fixed(Constants.gridItemFixedSize),
+                  spacing: Grid.Spacing.l)]
     }
     
-    init(category: Category, selectedStoreId: String?) {
+    init(category: Category, selectedStoreId: String?, selectedPriceSortOption: PriceSortOption?) {
         _viewModel = StateObject(wrappedValue: CategoryProductsViewModel(category: category,
-                                                                         selectedStoreId: selectedStoreId))
+                                                                         selectedStoreId: selectedStoreId,
+                                                                         selectedPriceSortOption: selectedPriceSortOption))
     }
     
     var body: some View {
@@ -36,7 +32,8 @@ struct CategoryProductsView: View {
             LazyVStack(alignment: .leading) {
                 ForEach(viewModel.groupedProducts.keys.sorted(), id: \.self) { location in
                     Section(header: sectionHeader(for: location)) {
-                        LazyVGrid(columns: gridColumns, spacing: CategoryProductsConstants.gridSpacing) {
+                        LazyVGrid(columns: gridColumns,
+                                  spacing: Grid.Spacing.xs2) {
                             ForEach(viewModel.groupedProducts[location] ?? []) { product in
                                 ProductCell(
                                     productName: product.name,
@@ -54,13 +51,13 @@ struct CategoryProductsView: View {
                                 )
                             }
                         }
-                        .padding(.bottom, CategoryProductsConstants.sectionPaddingBottom)
+                                  .padding(.bottom, Grid.Spacing.s)
                         
                         Divider()
                     }
                 }
             }
-            .padding(CategoryProductsConstants.viewPadding)
+            .padding(Grid.Spacing.s)
         }
         .navigationTitle(viewModel.category.name)
         .background(Color.gray400SwiftUI)
@@ -68,7 +65,7 @@ struct CategoryProductsView: View {
     
     private func sectionHeader(for location: String) -> some View {
         Text(location)
-            .font(.system(size: CategoryProductsConstants.sectionHeaderFontSize, weight: .bold))
-            .padding(.vertical, CategoryProductsConstants.sectionHeaderPaddingVertical)
+            .font(.system(size: Constants.sectionHeaderFontSize, weight: .bold))
+            .padding(.vertical, Grid.Spacing.s)
     }
 }

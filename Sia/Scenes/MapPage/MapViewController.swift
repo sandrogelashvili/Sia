@@ -9,6 +9,16 @@ import UIKit
 import MapKit
 import Combine
 
+private enum Constants {
+    static let latAndLong: CGFloat = 1000
+    
+    enum ConstantsStrings {
+        static let locationIconName: String = "location.circle.fill"
+        static let errorTitle: String = "Error"
+        static let actionTitle: String = "OK"
+    }
+}
+
 final class MapViewController: UIViewController {
     
     var locationManager: CLLocationManager?
@@ -22,17 +32,33 @@ final class MapViewController: UIViewController {
         return map
     }()
     
-    lazy var searchTextField: UITextField = {
-        let searchTextField = UITextField()
-        searchTextField.layer.cornerRadius = 10
-        searchTextField.clipsToBounds = true
-        searchTextField.backgroundColor = UIColor.white
-        searchTextField.placeholder = "Search"
-        searchTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
-        searchTextField.leftViewMode = .always
-        searchTextField.translatesAutoresizingMaskIntoConstraints = false
-        searchTextField.delegate = self
-        return searchTextField
+    lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.placeholder = L10n.Map.SearchBar.placeholder
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.delegate = self
+        searchBar.barTintColor = .white
+        searchBar.backgroundImage = UIImage()
+        
+        if let textField = searchBar.value(forKey: L10n.Map.SearchBar.forKeyValue) as? UITextField {
+            textField.backgroundColor = .white
+            textField.layer.cornerRadius = Grid.CornerRadius.textField
+            textField.clipsToBounds = true
+            
+            if let leftView = textField.leftView as? UIImageView {
+                leftView.tintColor = .gray
+            }
+        }
+        return searchBar
+    }()
+    
+    lazy var centerLocationButton: UIButton = {
+        let button = UIButton(type: .system)
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: Grid.Spacing.xl, weight: .medium, scale: .default)
+        let image = UIImage(systemName: Constants.ConstantsStrings.locationIconName, withConfiguration: symbolConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .systemBlue
+        return button
     }()
     
     override func viewDidLoad() {
@@ -41,15 +67,16 @@ final class MapViewController: UIViewController {
         locationManager?.delegate = self
         locationManager?.requestWhenInUseAuthorization()
         locationManager?.requestLocation()
+        mapView.delegate = self
         setupUI()
         bindViewModel()
- 
         viewModel.fetchStoresAndLocations()
     }
-
+    
     private func setupUI() {
         addMapView()
-        addSearchTextField()
+        addSearchBar()
+        addCenterLocationButton()
     }
     
     private func addMapView() {
@@ -62,112 +89,62 @@ final class MapViewController: UIViewController {
         ])
     }
     
-    private func addSearchTextField() {
-        view.addSubview(searchTextField)
+    private func addSearchBar() {
+        view.addSubview(searchBar)
         NSLayoutConstraint.activate([
-            searchTextField.heightAnchor.constraint(equalToConstant: 44),
-            searchTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            searchTextField.widthAnchor.constraint(equalToConstant: view.bounds.size.width / 1.2),
-            searchTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 60)
+            searchBar.heightAnchor.constraint(equalToConstant: Grid.Spacing.xl5),
+            searchBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            searchBar.widthAnchor.constraint(equalToConstant: view.bounds.size.width / 1.1),
+            searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: Grid.Spacing.xl4)
         ])
-        searchTextField.returnKeyType = .go
+    }
+    
+    private func addCenterLocationButton() {
+        view.addSubview(centerLocationButton)
+        centerLocationButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            centerLocationButton.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: Grid.Spacing.l),
+            centerLocationButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Grid.Spacing.l),
+        ])
+        centerLocationButton.addAction(UIAction { [weak self] _ in
+            self?.centerMapOnUserLocation()
+        }, for: .touchUpInside)
+    }
+    
+    private func centerMapOnUserLocation() {
+        guard let location = locationManager?.location else { return }
+        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: Constants.latAndLong, longitudinalMeters: Constants.latAndLong)
+        mapView.setRegion(region, animated: true)
     }
     
     private func bindViewModel() {
         viewModel.$locations
             .receive(on: DispatchQueue.main)
             .sink { [weak self] locations in
-                self?.updateMapWithLocations(locations)
+                guard let self = self else { return }
+                self.viewModel.updateMapWithLocations(locations, mapView: self.mapView)
             }
             .store(in: &cancellables)
         
         viewModel.$errorMessage
             .receive(on: DispatchQueue.main)
             .sink { [weak self] errorMessage in
+                guard let self = self else { return }
                 if let message = errorMessage {
-                    self?.showError(message)
+                    print(message)
+                    self.showErrorMessage(message)
                 }
             }
             .store(in: &cancellables)
     }
     
-    private func checkLocationAuthorization() {
-        guard let locationManager = locationManager,
-              let location = locationManager.location else { return }
-        
-        switch locationManager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            let region = MKCoordinateRegion(center: location.coordinate,
-                                            latitudinalMeters: 3000,
-                                            longitudinalMeters: 3000)
-            mapView.setRegion(region, animated: true)
-        case .notDetermined, .restricted, .denied:
-            showError("Location services are restricted or denied.")
-        @unknown default:
-            showError("Unknown error. Unable to get location.")
-        }
-    }
-    
-    private func findStoresByName(_ name: String) {
-        let matchedLocations = viewModel.findLocationsByStoreName(name)
-        if let firstLocation = matchedLocations.first {
-            let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: firstLocation.latitude ?? 0.0, longitude: firstLocation.longitude ?? 0.0),
-                                            latitudinalMeters: 3000,
-                                            longitudinalMeters: 3000)
-            mapView.setRegion(region, animated: true)
-        }
-        showLocationsOnMap(locations: matchedLocations)
-    }
-    
-    private func showLocationsOnMap(locations: [Location]) {
-        mapView.removeAnnotations(mapView.annotations)
-        locations.forEach { location in
-            let annotation = MKPointAnnotation()
-            annotation.title = location.address
-            annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude ?? 0.0, longitude: location.longitude ?? 0.0)
-            mapView.addAnnotation(annotation)
-        }
-    }
-    
-    private func updateMapWithLocations(_ locations: [Location]) {
-        mapView.removeAnnotations(mapView.annotations)
-        locations.forEach { location in
-            let annotation = MKPointAnnotation()
-            annotation.title = location.address
-            annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude ?? 0.0, longitude: location.longitude ?? 0.0)
-            mapView.addAnnotation(annotation)
-        }
-    }
-    
-    private func showError(_ message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+    private func showErrorMessage(_ message: String) {
+        let alert = UIAlertController(title: Constants.ConstantsStrings.errorTitle, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Constants.ConstantsStrings.actionTitle, style: .default))
         present(alert, animated: true)
     }
-}
-
-extension MapViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let text = textField.text ?? ""
-        if !text.isEmpty {
-            textField.resignFirstResponder()
-            findStoresByName(text)
-        }
-        return true
-    }
-}
-
-extension MapViewController: CLLocationManagerDelegate {
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        // Do nothing
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        showError("Failed to get location: \(error.localizedDescription)")
+    func checkLocationAuthorization() {
+        viewModel.checkLocationAuthorization(locationManager: locationManager, mapView: mapView)
     }
 }

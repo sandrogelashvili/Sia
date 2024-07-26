@@ -28,6 +28,10 @@
                                     <constraint firstAttribute="height" constant="240" id="s1i-Xj-36r"/>
                                 </constraints>
                             </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LaunchScreenImage" translatesAutoresizingMaskIntoConstraints="NO" id="BO4-Nn-IAQ">
+                                <rect key="frame" x="-91" y="252" width="575" height="600"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="0.33725491169999999" green="0.62352943419999995" blue="0.49019610879999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -43,10 +47,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.671755725190835" y="374.64788732394368"/>
         </scene>
     </scenes>
     <resources>
         <image name="AppIconImage" width="1024" height="1024"/>
+        <image name="LaunchScreenImage" width="1001" height="1500"/>
     </resources>
 </document>

@@ -37,7 +37,7 @@ struct SearchBarFilterView: View {
                     Spacer()
                     clearButton
                 }
-                .padding(.trailing, Grid.Spacing.xs)
+                    .padding(.trailing, Grid.Spacing.xs)
             )
             
             ZStack {
@@ -61,7 +61,7 @@ struct SearchBarFilterView: View {
     }
     
     private var searchBarTextField: some View {
-        TextField(L10n.Searchbar.Filterview.searchPlaceholder, text: $searchText, onEditingChanged: { _ in searchAction() })
+        TextField(L10n.SearchBar.FilterView.searchPlaceholder, text: $searchText, onEditingChanged: { _ in searchAction() })
             .padding(Grid.Spacing.xs)
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: Grid.CornerRadius.textField))
@@ -72,7 +72,7 @@ struct SearchBarFilterView: View {
         Button {
             searchText = ""
         } label: {
-            Label(L10n.Searchbar.Filterview.clear, systemImage: Constants.ConstantsStrings.iconCancelButton)
+            Label(L10n.SearchBar.FilterView.clear, systemImage: Constants.ConstantsStrings.iconCancelButton)
                 .foregroundColor(.gray)
                 .opacity(searchText.isEmpty ? .zero : 1)
                 .padding(Grid.Spacing.xl3)

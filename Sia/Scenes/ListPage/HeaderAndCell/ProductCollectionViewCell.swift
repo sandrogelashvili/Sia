@@ -8,28 +8,13 @@
 import UIKit
 
 private enum Constants {
-    static let productImageCornerRadius: CGFloat = 8
     static let productImageSize: CGFloat = 100
-    static let productImageLeadingPadding: CGFloat = 16
-    static let productImageTrailingPadding: CGFloat = 16
-    static let productNameTopPadding: CGFloat = 16
-    static let stockStatusTopPadding: CGFloat = 4
     static let stockStatusWidth: CGFloat = 90
-    static let stockStatusHeight: CGFloat = 20
-    static let storeImageTopPadding: CGFloat = 4
-    static let storeImageSize: CGFloat = 20
-    static let storeNameLeadingPadding: CGFloat = 4
-    static let priceStackViewTopPadding: CGFloat = 4
-    static let priceStackViewBottomPadding: CGFloat = -16
-    static let priceStackViewSpacing: CGFloat = 2
-    static let oldPriceLabelFontSize: CGFloat = 14
-    static let newPriceLabelFontSize: CGFloat = 14
+    static let priceLabelFontSize: CGFloat = 14
     static let storeNameLabelFontSize: CGFloat = 12
     static let productNameLabelFontSize: CGFloat = 14
     static let stockStatusLabelFontSize: CGFloat = 10
     static let spacerViewWidth: CGFloat = 95
-    static let contentViewCornerRadius: CGFloat = 10
-    static let contentViewBorderWidth: CGFloat = 0.5
     
     enum ConstantsStrings {
         static let cellIdentifier: String = "ProductCollectionViewCell"
@@ -44,7 +29,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = Constants.productImageCornerRadius
+        imageView.layer.cornerRadius = Grid.CornerRadius.textField
         return imageView
     }()
     
@@ -59,7 +44,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = Constants.productImageCornerRadius
+        imageView.layer.cornerRadius = Grid.CornerRadius.textField
         return imageView
     }()
     
@@ -83,9 +68,10 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: Constants.stockStatusLabelFontSize, weight: .semibold)
         label.textColor = .white
         label.backgroundColor = .gray400UIKit
-        label.layer.cornerRadius = 5
+        label.layer.cornerRadius = Grid.CornerRadius.textField
         label.clipsToBounds = true
         label.textAlignment = .center
+        label.backgroundColor = .systemGray5
         return label
     }()
     
@@ -101,7 +87,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = Constants.priceStackViewSpacing
+        stackView.spacing = Grid.Spacing.xs3
         stackView.alignment = .leading
         return stackView
     }()
@@ -109,7 +95,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     private var oldPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: Constants.oldPriceLabelFontSize, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: Constants.priceLabelFontSize, weight: .medium)
         label.textColor = .gray
         label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         return label
@@ -118,7 +104,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     private var newPriceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: Constants.newPriceLabelFontSize, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: Constants.priceLabelFontSize, weight: .medium)
         label.textColor = .black
         label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         return label
@@ -133,10 +119,10 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        contentView.layer.cornerRadius = Constants.contentViewCornerRadius
+        contentView.layer.cornerRadius = Grid.CornerRadius.textField
         contentView.backgroundColor = .white
         contentView.layer.borderColor = UIColor.lightGray.cgColor
-        contentView.layer.borderWidth = Constants.contentViewBorderWidth
+        contentView.layer.borderWidth = Grid.BorderWidth.thin
     }
     
     required init?(coder: NSCoder) {
@@ -175,9 +161,9 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     private func addProductNameLabel() {
         contentView.addSubview(productNameLabel)
         NSLayoutConstraint.activate([
-            productNameLabel.leadingAnchor.constraint(equalTo: productImageView.trailingAnchor, constant: Constants.productImageTrailingPadding),
-            productNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.productImageTrailingPadding),
-            productNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.productNameTopPadding)
+            productNameLabel.leadingAnchor.constraint(equalTo: productImageView.trailingAnchor, constant: Grid.Spacing.m),
+            productNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Grid.Spacing.m),
+            productNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Grid.Spacing.m)
         ])
     }
     
@@ -185,9 +171,9 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(stockStatusLabel)
         NSLayoutConstraint.activate([
             stockStatusLabel.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
-            stockStatusLabel.topAnchor.constraint(equalTo: productNameLabel.bottomAnchor, constant: Constants.stockStatusTopPadding),
+            stockStatusLabel.topAnchor.constraint(equalTo: productNameLabel.bottomAnchor, constant: Grid.Spacing.xs2),
             stockStatusLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: Constants.stockStatusWidth),
-            stockStatusLabel.heightAnchor.constraint(equalToConstant: Constants.stockStatusHeight)
+            stockStatusLabel.heightAnchor.constraint(equalToConstant: Grid.Spacing.l)
         ])
     }
     
@@ -195,9 +181,9 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(storeImageView)
         NSLayoutConstraint.activate([
             storeImageView.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
-            storeImageView.topAnchor.constraint(equalTo: stockStatusLabel.bottomAnchor, constant: Constants.storeImageTopPadding),
-            storeImageView.widthAnchor.constraint(equalToConstant: Constants.storeImageSize),
-            storeImageView.heightAnchor.constraint(equalToConstant: Constants.storeImageSize)
+            storeImageView.topAnchor.constraint(equalTo: stockStatusLabel.bottomAnchor, constant: Grid.Spacing.xs2),
+            storeImageView.widthAnchor.constraint(equalToConstant: Grid.Spacing.l),
+            storeImageView.heightAnchor.constraint(equalToConstant: Grid.Spacing.l)
         ])
     }
     
@@ -212,7 +198,7 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     private func addStoreNameLabel() {
         contentView.addSubview(storeNameLabel)
         NSLayoutConstraint.activate([
-            storeNameLabel.leadingAnchor.constraint(equalTo: storeImageView.trailingAnchor, constant: Constants.storeNameLeadingPadding),
+            storeNameLabel.leadingAnchor.constraint(equalTo: storeImageView.trailingAnchor, constant: Grid.Spacing.xs2),
             storeNameLabel.centerYAnchor.constraint(equalTo: storeImageView.centerYAnchor)
         ])
     }
@@ -222,8 +208,8 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             priceStackView.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
             priceStackView.trailingAnchor.constraint(equalTo: productNameLabel.trailingAnchor),
-            priceStackView.topAnchor.constraint(equalTo: storeImageView.bottomAnchor, constant: Constants.priceStackViewTopPadding),
-            priceStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: Constants.priceStackViewBottomPadding)
+            priceStackView.topAnchor.constraint(equalTo: storeImageView.bottomAnchor, constant: Grid.Spacing.xs2),
+            priceStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Grid.Spacing.m)
         ])
         
         priceStackView.addArrangedSubview(oldPriceLabel)
@@ -239,7 +225,11 @@ final class ProductCollectionViewCell: UICollectionViewCell {
         stockStatusLabel.textColor = getColorForStockStatus(product.stockStatus)
         
         if product.onDeal == true, let newPrice = product.newPrice {
-            oldPriceLabel.text = "\(product.price)₾"
+            let attributedText = NSAttributedString(
+                string: "\(product.price)₾",
+                attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
+            )
+            oldPriceLabel.attributedText = attributedText
             oldPriceLabel.isHidden = false
             newPriceLabel.text = "\(newPrice)₾"
         } else {
@@ -266,12 +256,12 @@ final class ProductCollectionViewCell: UICollectionViewCell {
     
     private func getColorForStockStatus(_ status: String) -> UIColor {
         switch status {
-        case L10n.Productcell.Stockstatus.inStock:
+        case L10n.ProductCell.StockStatus.inStock:
             return UIColor .appThemeGreenUIKit
-        case L10n.Productcell.Stockstatus.limitedStock:
-            return .gray
-        case L10n.Productcell.Stockstatus.outOfStock:
+        case L10n.ProductCell.StockStatus.limitedStock:
             return .orange
+        case L10n.ProductCell.StockStatus.outOfStock:
+            return .gray
         default:
             return .gray
         }

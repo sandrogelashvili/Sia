@@ -15,6 +15,7 @@ class SearchResultsViewModel: ObservableObject {
     @Published var locations: [Location] = []
     @Published var stores: [Store] = []
     var selectedStoreId: String? = nil
+    var selectedPriceSortOption: PriceSortOption? = nil
     
     private var firestoreManager: FirestoreManager
     private var cancellables = Set<AnyCancellable>()
@@ -30,8 +31,7 @@ class SearchResultsViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] products in
                 self?.allProducts = products
-                self?.filteredProducts = products
-                self?.groupedSearchProductsByLocation()
+                self?.applyFilters()
             }
             .store(in: &cancellables)
         
@@ -39,7 +39,7 @@ class SearchResultsViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] locations in
                 self?.locations = locations
-                self?.groupedSearchProductsByLocation()
+                self?.applyFilters()
             }
             .store(in: &cancellables)
         
@@ -74,8 +74,7 @@ class SearchResultsViewModel: ObservableObject {
                 }
             }, receiveValue: { [weak self] products in
                 self?.allProducts = products
-                self?.filteredProducts = products
-                self?.groupedSearchProductsByLocation()
+                self?.applyFilters()
             })
             .store(in: &cancellables)
     }
@@ -84,7 +83,27 @@ class SearchResultsViewModel: ObservableObject {
         filteredProducts = allProducts.filter {
             $0.name.contains(query) && (selectedStoreId == nil || $0.storeId == selectedStoreId)
         }
+        applyPriceSortOption()
         groupedSearchProductsByLocation()
+    }
+    
+    private func applyFilters() {
+        filteredProducts = allProducts.filter { product in
+            (selectedStoreId == nil || product.storeId == selectedStoreId)
+        }
+        applyPriceSortOption()
+        groupedSearchProductsByLocation()
+    }
+    
+    private func applyPriceSortOption() {
+        guard let selectedPriceSortOption = selectedPriceSortOption else { return }
+        
+        switch selectedPriceSortOption {
+        case .lowToHigh:
+            filteredProducts.sort { $0.price < $1.price }
+        case .highToLow:
+            filteredProducts.sort { $0.price > $1.price }
+        }
     }
     
     private func groupedSearchProductsByLocation() {
@@ -109,6 +128,6 @@ class SearchResultsViewModel: ObservableObject {
     func toggleFavorite(for product: Product) {
         var mutableProduct = product
         FavoritesManager.shared.toggleFavorite(product: &mutableProduct, allProducts: &allProducts)
-        groupedSearchProductsByLocation()
+        applyFilters()
     }
 }

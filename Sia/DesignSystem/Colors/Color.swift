@@ -1,5 +1,5 @@
 //
-//  ColorExtensionForHex.swift
+//  Color.swift
 //  Sia
 //
 //  Created by Sandro Gelashvili on 13.07.24.

@@ -9,10 +9,6 @@ import UIKit
 
 private enum Constants {
     static let titleLabelFontSize: CGFloat = 18
-    static let titleLabelLeadingPadding: CGFloat = 16
-    static let titleLabelTrailingPadding: CGFloat = -16
-    static let titleLabelTopPadding: CGFloat = 8
-    static let titleLabelBottomPadding: CGFloat = -8
     
     enum ConstantsStrings {
         static let cellIdentifier: String = "HeaderView"
@@ -42,10 +38,10 @@ final class SectionHeaderView: UICollectionReusableView {
     private func setupUI() {
         addSubview(titleLabel)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.titleLabelLeadingPadding),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Constants.titleLabelTrailingPadding),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constants.titleLabelTopPadding),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constants.titleLabelBottomPadding)
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Grid.Spacing.m),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Grid.Spacing.m),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Grid.Spacing.xs),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Grid.Spacing.xs)
         ])
     }
     

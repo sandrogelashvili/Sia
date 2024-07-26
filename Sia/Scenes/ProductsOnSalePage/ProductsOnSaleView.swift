@@ -10,14 +10,17 @@ import SwiftUI
 struct ProductsOnSaleView: View {
     @StateObject var viewModel: ProductsOnSaleViewModel
     
+    private var columns: [GridItem] { [GridItem(.flexible()), GridItem(.flexible())]
+    }
+    
     var body: some View {
         VStack {
-            Text(L10n.ProductsOnSale.title) // ეს შესაცვლელია
+            Text(L10n.ProductsOnSale.title)
                 .font(.title)
                 .padding()
             
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                LazyVGrid(columns: columns) {
                     ForEach(viewModel.saleProducts) { product in
                         ProductCell(
                             productName: product.name,

@@ -8,13 +8,7 @@
 import UIKit
 import Combine
 
-private enum StoreDetailsHeaderViewConstants {
-    static let imageCornerRadius: CGFloat = 16
-    static let imageWidth: CGFloat = 32
-    static let imageHeight: CGFloat = 32
-    static let topPadding: CGFloat = 20
-    static let leadingPadding: CGFloat = 20
-    static let trailingPadding: CGFloat = -20
+private enum Constants {
     static let nameLabelFontSize: CGFloat = 22
     static let nameLabelLeadingPadding: CGFloat = 20
 }
@@ -26,7 +20,7 @@ final class StoreDetailsHeaderView: UIView {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = StoreDetailsHeaderViewConstants.imageCornerRadius
+        imageView.layer.cornerRadius = Grid.CornerRadius.filter
         imageView.clipsToBounds = true
         return imageView
     }()
@@ -40,7 +34,7 @@ final class StoreDetailsHeaderView: UIView {
     private let storeNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: StoreDetailsHeaderViewConstants.nameLabelFontSize, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: Constants.nameLabelFontSize, weight: .semibold)
         return label
     }()
     
@@ -63,10 +57,10 @@ final class StoreDetailsHeaderView: UIView {
     private func addStoreImageView() {
         addSubview(storeImageView)
         NSLayoutConstraint.activate([
-            storeImageView.topAnchor.constraint(equalTo: topAnchor, constant: StoreDetailsHeaderViewConstants.topPadding),
-            storeImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: StoreDetailsHeaderViewConstants.leadingPadding),
-            storeImageView.widthAnchor.constraint(equalToConstant: StoreDetailsHeaderViewConstants.imageWidth),
-            storeImageView.heightAnchor.constraint(equalToConstant: StoreDetailsHeaderViewConstants.imageHeight)
+            storeImageView.topAnchor.constraint(equalTo: topAnchor, constant: Grid.Spacing.l),
+            storeImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Grid.Spacing.l),
+            storeImageView.widthAnchor.constraint(equalToConstant:Grid.Spacing.xl3),
+            storeImageView.heightAnchor.constraint(equalToConstant:Grid.Spacing.xl3)
         ])
     }
     
@@ -82,8 +76,8 @@ final class StoreDetailsHeaderView: UIView {
         addSubview(storeNameLabel)
         NSLayoutConstraint.activate([
             storeNameLabel.centerYAnchor.constraint(equalTo: storeImageView.centerYAnchor),
-            storeNameLabel.leadingAnchor.constraint(equalTo: storeImageView.trailingAnchor, constant: StoreDetailsHeaderViewConstants.nameLabelLeadingPadding),
-            storeNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: StoreDetailsHeaderViewConstants.trailingPadding)
+            storeNameLabel.leadingAnchor.constraint(equalTo: storeImageView.trailingAnchor, constant: Constants.nameLabelLeadingPadding),
+            storeNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Grid.Spacing.l)
         ])
     }
     

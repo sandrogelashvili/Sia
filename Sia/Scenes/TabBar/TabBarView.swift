@@ -36,14 +36,10 @@ struct TabBarView: View {
             
             MapViewControllerWrapper()
                 .tabItem {
-                    Image(systemName: "location")
-                    Text("რუკა")
+                    Image .iconTabBarMap
+                    Text(L10n.Tabbar.locationsmap)
                 }
         }
         .accentColor(Color.appThemeGreenSwiftUI)
     }
-}
-
-#Preview {
-    TabBarView()
 }

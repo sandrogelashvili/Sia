@@ -148,11 +148,11 @@ struct ProductCell: View {
     
     private var stockStatusColor: Color {
         switch stockStatus {
-        case L10n.Productcell.Stockstatus.inStock:
+        case L10n.ProductCell.StockStatus.inStock:
             return Color.appThemeGreenSwiftUI
-        case L10n.Productcell.Stockstatus.limitedStock:
+        case L10n.ProductCell.StockStatus.limitedStock:
             return .gray
-        case L10n.Productcell.Stockstatus.outOfStock:
+        case L10n.ProductCell.StockStatus.outOfStock:
             return .orange
         default:
             return .gray

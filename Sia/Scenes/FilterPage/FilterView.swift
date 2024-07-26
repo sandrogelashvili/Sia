@@ -7,75 +7,126 @@
 
 import SwiftUI
 
-private enum FilterViewConstants {
-    static let topSpacerHeight: CGFloat = 50
-    static let sectionFontSize: CGFloat = 20
-    static let verticalSpacing: CGFloat = 10
-    static let storeCellHeight: CGFloat = 50
-    static let horizontalPadding: CGFloat = 10
+private enum Constants {
+    static let sectionFontSize: CGFloat = 16
+    static let scrollViewTopPadding: CGFloat = 70
 }
 
 struct FilterView: View {
     @Binding var isPresented: Bool
     @Binding var selectedStoreId: String?
+    @Binding var selectedPriceSortOption: PriceSortOption?
     @StateObject private var viewModel = FilterViewModel()
     
     var body: some View {
-        VStack {
-            Spacer()
-                .frame(height: FilterViewConstants.topSpacerHeight)
-
-            HStack {
-                Text(L10n.Filterview.byStores)
-                    .font(.system(size: FilterViewConstants.sectionFontSize, weight: .semibold))
-                
-                Spacer()
-                
-                cancelButton
-            }
-            .padding(.horizontal, FilterViewConstants.horizontalPadding)
-            
-            ScrollView {
-                VStack(spacing: FilterViewConstants.verticalSpacing) {
-                    ForEach(viewModel.stores) { store in
-                        FilterStoreCell(
-                            storeName: store.name,
-                            imageURL: store.storeImageURL,
-                            height: FilterViewConstants.storeCellHeight,
-                            isSelected: selectedStoreId == store.id,
-                            onSelect: {
-                                if selectedStoreId == store.id {
-                                    selectedStoreId = nil
-                                } else {
-                                    selectedStoreId = store.id
-                                }
-                            }
-                        )
-                    }
-                }
+        ScrollView {
+            VStack {
                 Divider()
                 
-                HStack {
-                    Text(L10n.Filterview.byPrice)
-                        .font(.system(size: FilterViewConstants.sectionFontSize, weight: .semibold))
-                    
-                    Spacer()
-                }
-                .padding(.horizontal, FilterViewConstants.horizontalPadding)
+                storeFilterSection
+                
+                Divider()
+                    .padding(.top)
+                
+                priceFilterSection
+                
+                Divider()
+                
+                Spacer()
             }
-            Spacer()
+            .padding(.horizontal, Grid.Spacing.s)
         }
         .background(Color.gray400SwiftUI)
+        .padding(.top, Constants.scrollViewTopPadding)
     }
     
-    private var cancelButton: some View {
+    private var storeFilterSection: some View {
+        VStack(spacing: Grid.Spacing.s) {
+            HStack {
+                Text(L10n.FilterView.byStores)
+                    .font(.system(size: Constants.sectionFontSize, weight: .semibold))
+                
+                Spacer()
+            }
+            .padding(.horizontal, Grid.Spacing.s)
+            
+            ForEach(viewModel.stores) { store in
+                FilterStoreCell(
+                    storeName: store.name,
+                    imageURL: store.storeImageURL,
+                    height: Grid.Spacing.xl5,
+                    isSelected: selectedStoreId == store.id,
+                    onSelect: {
+                        if selectedStoreId == store.id {
+                            selectedStoreId = nil
+                        } else {
+                            selectedStoreId = store.id
+                        }
+                    }
+                )
+            }
+        }
+    }
+    
+    private var priceFilterSection: some View {
+        VStack(spacing: Grid.Spacing.s) {
+            HStack {
+                Text(L10n.FilterView.byPrice)
+                    .font(.system(size: Constants.sectionFontSize, weight: .semibold))
+                
+                Spacer()
+            }
+            .padding(.horizontal, Grid.Spacing.s)
+            
+            HStack(spacing: Grid.Spacing.s) {
+                lowToHighButton
+                highToLowButton
+            }
+            .padding(.horizontal, Grid.Spacing.s)
+        }
+    }
+    
+    private var lowToHighButton: some View {
         Button(action: {
-            isPresented = false
+            if selectedPriceSortOption == .lowToHigh {
+                selectedPriceSortOption = nil
+            } else {
+                selectedPriceSortOption = .lowToHigh
+            }
         }) {
-            Image.iconForCancelButton
-                .foregroundColor(Color.gray)
-                .font(.title3)
+            Text(L10n.FilterView.lowToHighPrice)
+                .font(.system(size: Constants.sectionFontSize))
+                .padding(Grid.Spacing.xs)
+                .frame(height: Grid.Spacing.xl4)
+                .background(selectedPriceSortOption == .lowToHigh ? Color.appThemeGreenSwiftUI: .white)
+                .foregroundColor(selectedPriceSortOption == .lowToHigh ? Color.white : Color.black)
+                .cornerRadius(Grid.CornerRadius.filter)
+                .overlay(
+                    RoundedRectangle(cornerRadius: Grid.CornerRadius.button)
+                        .stroke(Color.appThemeGreenSwiftUI, lineWidth: selectedPriceSortOption == .lowToHigh ? .zero : 2)
+                )
+        }
+    }
+    
+    private var highToLowButton: some View {
+        Button(action: {
+            if selectedPriceSortOption == .highToLow {
+                selectedPriceSortOption = nil
+            } else {
+                selectedPriceSortOption = .highToLow
+            }
+        }) {
+            Text(L10n.FilterView.highToLowPrice)
+                .font(.system(size: Constants.sectionFontSize))
+                .padding(Grid.Spacing.xs)
+                .frame(height: Grid.Spacing.xl4)
+                .background(selectedPriceSortOption == .highToLow ? Color.appThemeGreenSwiftUI : .white)
+                .foregroundColor(selectedPriceSortOption == .highToLow ? Color.white : Color.black)
+                .cornerRadius(Grid.CornerRadius.filter)
+                .overlay(
+                    RoundedRectangle(cornerRadius: Grid.CornerRadius.button)
+                        .stroke(Color.appThemeGreenSwiftUI, lineWidth: selectedPriceSortOption == .highToLow ? .zero : 2)
+                )
         }
     }
 }
-

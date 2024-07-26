@@ -22,9 +22,12 @@ final class ListPageViewModel {
     private(set) var stores: [Store] = []
     private var firestoreManager: FirestoreManager
     
+    private let favoritesKey = "favoriteProducts"
+    
     init(firestoreManager: FirestoreManager = FirestoreManager()) {
         self.firestoreManager = firestoreManager
         fetchStores()
+        loadFavoriteProducts()
     }
     
     private func fetchStores() {
@@ -41,17 +44,20 @@ final class ListPageViewModel {
     func addFavorite(product: Product) {
         if !favoriteProducts.contains(where: { $0.id == product.id }) {
             favoriteProducts.append(product)
+            saveFavoriteProducts()
             refreshData()
         }
     }
     
     func removeFavorite(product: Product) {
         favoriteProducts.removeAll { $0.id == product.id }
+        saveFavoriteProducts()
         refreshData()
     }
     
     func clearFavorites() {
         favoriteProducts.removeAll()
+        saveFavoriteProducts()
         refreshData()
     }
     
@@ -60,7 +66,7 @@ final class ListPageViewModel {
         keys = Array(productsGrouped.keys).sorted()
     }
     
-    func groupedFavoriteProducts() -> [String: [Product]] {
+    private func groupedFavoriteProducts() -> [String: [Product]] {
         var groupedDict = [String: [Product]]()
         for product in favoriteProducts {
             groupedDict[product.locationId, default: []].append(product)
@@ -71,23 +77,42 @@ final class ListPageViewModel {
     func getLocationName(for locationId: String) -> String {
         switch locationId {
         case ListPageViewModelConstants.location1:
-            return L10n.Listpage.location1
+            return L10n.ListPage.location1
         case ListPageViewModelConstants.location2:
-            return L10n.Listpage.location2
+            return L10n.ListPage.location2
         case ListPageViewModelConstants.location3:
-            return L10n.Listpage.location3
+            return L10n.ListPage.location3
         case ListPageViewModelConstants.location4:
-            return L10n.Listpage.location4
+            return L10n.ListPage.location4
         default:
-            return L10n.Listpage.unknownLocation
+            return L10n.ListPage.unknownLocation
         }
     }
     
     func getStoreName(for storeId: String) -> String {
-        return stores.first(where: { $0.id == storeId })?.name ?? L10n.Listpage.unknownStore
+        return stores.first(where: { $0.id == storeId })?.name ?? L10n.ListPage.unknownStore
     }
     
     func getStoreImageURL(for storeId: String) -> String {
         return stores.first(where: { $0.id == storeId })?.storeImageURL ?? ""
+    }
+    
+    private func saveFavoriteProducts() {
+        do {
+            let data = try JSONEncoder().encode(favoriteProducts)
+            UserDefaults.standard.set(data, forKey: favoritesKey)
+        } catch {
+            print("Failed to save favorite products: \(error)")
+        }
+    }
+    
+    private func loadFavoriteProducts() {
+        guard let data = UserDefaults.standard.data(forKey: favoritesKey) else { return }
+        do {
+            favoriteProducts = try JSONDecoder().decode([Product].self, from: data)
+            refreshData()
+        } catch {
+            print("Failed to load favorite products: \(error)")
+        }
     }
 }

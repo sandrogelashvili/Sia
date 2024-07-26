@@ -12,6 +12,7 @@ class HomePageViewModel: ObservableObject {
     @Published var categories: [Category] = []
     @Published var stores: [Store] = []
     @Published var selectedStoreId: String? = nil
+    @Published var selectedPriceSortOption: PriceSortOption? = nil
     
     private var firestoreManager: FirestoreManager
     private var cancellables = Set<AnyCancellable>()

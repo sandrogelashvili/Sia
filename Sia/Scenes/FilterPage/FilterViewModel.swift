@@ -8,8 +8,14 @@
 import Foundation
 import Combine
 
+enum PriceSortOption {
+    case lowToHigh
+    case highToLow
+}
+
 class FilterViewModel: ObservableObject {
     @Published var stores: [Store] = []
+    @Published var selectedPriceSortOption: PriceSortOption?
     
     private var firestoreManager = FirestoreManager()
     private var cancellables = Set<AnyCancellable>()

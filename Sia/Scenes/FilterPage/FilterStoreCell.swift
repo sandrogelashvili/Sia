@@ -7,19 +7,9 @@
 
 import SwiftUI
 
-private enum FilterStoreCellConstants {
-    static let cornerRadius: CGFloat = 10
+private enum Constants {
     static let strokeOpacity: Double = 0.5
-    static let strokeLineWidth: CGFloat = 1
-    static let imagePaddingBottom: CGFloat = 20
-    static let textFontSize: CGFloat = 20
-    static let textFontWeight: Font.Weight = .bold
-    static let textPaddingLeading: CGFloat = 5
-    static let circleSize: CGFloat = 24
-    static let innerCircleSize: CGFloat = 18
-    static let circleStrokeLineWidth: CGFloat = 1
-    static let circlePaddingTrailing: CGFloat = 10
-    static let cellPaddingHorizontal: CGFloat = 10
+    static let textFontSize: CGFloat = 16
 }
 
 struct FilterStoreCell: View {
@@ -31,12 +21,12 @@ struct FilterStoreCell: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: FilterStoreCellConstants.cornerRadius)
+            RoundedRectangle(cornerRadius: Grid.CornerRadius.textField)
                 .fill(.white)
                 .frame(height: height)
                 .overlay {
-                    RoundedRectangle(cornerRadius: FilterStoreCellConstants.cornerRadius)
-                        .stroke(Color.gray.opacity(FilterStoreCellConstants.strokeOpacity), lineWidth: FilterStoreCellConstants.strokeLineWidth)
+                    RoundedRectangle(cornerRadius: Grid.CornerRadius.textField)
+                        .stroke(Color.gray.opacity(Constants.strokeOpacity), lineWidth: Grid.BorderWidth.regular)
                 }
                 .onTapGesture {
                     onSelect()
@@ -44,33 +34,33 @@ struct FilterStoreCell: View {
             
             HStack {
                 AsyncImageView(imageURL: imageURL,
-                               height: height - FilterStoreCellConstants.imagePaddingBottom)
+                               height: height - Grid.Spacing.l)
                 .padding(.bottom)
                 
                 Text(storeName)
                     .foregroundColor(.black)
-                    .font(.system(size: FilterStoreCellConstants.textFontSize, weight: FilterStoreCellConstants.textFontWeight))
-                    .padding(.leading, FilterStoreCellConstants.textPaddingLeading)
+                    .font(.system(size: Constants.textFontSize, weight: .semibold))
+                    .padding(.leading, Grid.Spacing.xs2)
                 
                 Spacer()
                 
                 ZStack {
                     Circle()
-                        .frame(width: FilterStoreCellConstants.circleSize, height: FilterStoreCellConstants.circleSize)
+                        .frame(width: Grid.Spacing.xl, height: Grid.Spacing.xl)
                         .foregroundColor(.white)
                         .overlay {
                             Circle()
-                                .stroke(Color.appThemeGreenSwiftUI, lineWidth: FilterStoreCellConstants.circleStrokeLineWidth)
+                                .stroke(Color.appThemeGreenSwiftUI, lineWidth: Grid.BorderWidth.regular)
                         }
                     if isSelected {
                         Circle()
-                            .frame(width: FilterStoreCellConstants.innerCircleSize, height: FilterStoreCellConstants.innerCircleSize)
+                            .frame(width: Grid.Spacing.l, height: Grid.Spacing.l)
                             .foregroundColor(Color.appThemeGreenSwiftUI)
                     }
                 }
-                .padding(.trailing, FilterStoreCellConstants.circlePaddingTrailing)
+                .padding(.trailing, Grid.Spacing.s)
             }
         }
-        .padding(.horizontal, FilterStoreCellConstants.cellPaddingHorizontal)
+        .padding(.horizontal, Grid.Spacing.s)
     }
 }

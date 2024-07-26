@@ -1,5 +1,5 @@
 //
-//  Icons.swift
+//  Images.swift
 //  Sia
 //
 //  Created by Sandro Gelashvili on 24.07.24.
@@ -16,6 +16,7 @@ extension Image {
     static let iconTabBarHome = Image(systemName: "house")
     static let iconTabBarList = Image(systemName: "list.clipboard")
     static let iconTabBarStore = Image(systemName: "storefront")
+    static let iconTabBarMap = Image(systemName: "location")
     
     // MARK: - SearchAndFilterIcons
     static let iconSearch = Image(systemName: "magnifyingglass")
@@ -28,4 +29,9 @@ extension Image {
     
     // MARK: - FilterView
     static let iconForCancelButton = Image(systemName: "x.circle.fill")
+    
+    // MARK: - OnboardingView
+    static let imageForFirsObPage = Image("Onboarding21")
+    static let imageForSecondObPage = Image("onBoarding22")
+    static let imageForThirdPage = Image("Onboarding20")
 }

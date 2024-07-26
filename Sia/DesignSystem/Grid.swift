@@ -22,14 +22,14 @@ public enum Grid {
         public static let xl4: CGFloat = 40.0
         public static let xl5: CGFloat = 48.0
     }
-
+    
     public enum BorderWidth {
         public static let extraThin: CGFloat = 0.2
         public static let thin: CGFloat = 0.5
         public static let regular: CGFloat = 1.0
         public static let thick: CGFloat = 2.0
     }
-
+    
     public enum CornerRadius {
         public static let textField: CGFloat = 10.0
         public static let filter: CGFloat = 16.0
