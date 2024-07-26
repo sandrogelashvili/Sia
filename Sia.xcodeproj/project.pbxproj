@@ -60,7 +60,6 @@
 		088D809B2C52D86300B15F76 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088D809A2C52D86300B15F76 /* MapViewModel.swift */; };
 		088D809D2C52DBC500B15F76 /* MapViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088D809C2C52DBC500B15F76 /* MapViewControllerWrapper.swift */; };
 		088D809F2C52EF6100B15F76 /* StoresTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088D809E2C52EF6100B15F76 /* StoresTableViewController.swift */; };
-		088D80A12C52F60100B15F76 /* PlaceAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088D80A02C52F60100B15F76 /* PlaceAnnotation.swift */; };
 		08D689D62C47FFAE007932A0 /* DealsAndOffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D689D52C47FFAE007932A0 /* DealsAndOffers.swift */; };
 		08D848DF2C3D530C0016C4B5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08D848DE2C3D530C0016C4B5 /* GoogleService-Info.plist */; };
 		08D848E22C3D55750016C4B5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 08D848E12C3D55750016C4B5 /* FirebaseAuth */; };
@@ -125,7 +124,6 @@
 		088D809A2C52D86300B15F76 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		088D809C2C52DBC500B15F76 /* MapViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerWrapper.swift; sourceTree = "<group>"; };
 		088D809E2C52EF6100B15F76 /* StoresTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoresTableViewController.swift; sourceTree = "<group>"; };
-		088D80A02C52F60100B15F76 /* PlaceAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceAnnotation.swift; sourceTree = "<group>"; };
 		08D689D52C47FFAE007932A0 /* DealsAndOffers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealsAndOffers.swift; sourceTree = "<group>"; };
 		08D848DE2C3D530C0016C4B5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -393,9 +391,8 @@
 			isa = PBXGroup;
 			children = (
 				088D80962C52CF4900B15F76 /* MapViewController.swift */,
-				088D80A02C52F60100B15F76 /* PlaceAnnotation.swift */,
-				088D809C2C52DBC500B15F76 /* MapViewControllerWrapper.swift */,
 				088D809A2C52D86300B15F76 /* MapViewModel.swift */,
+				088D809C2C52DBC500B15F76 /* MapViewControllerWrapper.swift */,
 				088D809E2C52EF6100B15F76 /* StoresTableViewController.swift */,
 			);
 			path = MapPage;
@@ -486,7 +483,6 @@
 				08736DC72C51693400A94E37 /* UIColor.swift in Sources */,
 				086B16122C4BECD50057366B /* StoreDetailsViewModel.swift in Sources */,
 				0877D4E62C4556C80073EAF4 /* StorePageViewControllerWrapper.swift in Sources */,
-				088D80A12C52F60100B15F76 /* PlaceAnnotation.swift in Sources */,
 				08658FBB2C3EDAC400F11477 /* SearchBar&FilterView.swift in Sources */,
 				08885B862C408C19004C2ED3 /* ListPageViewController.swift in Sources */,
 				08658FCC2C3F26F800F11477 /* TabBarView.swift in Sources */,

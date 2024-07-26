@@ -22,6 +22,19 @@ final class MapViewController: UIViewController {
         return map
     }()
     
+    lazy var searchTextField: UITextField = {
+        let searchTextField = UITextField()
+        searchTextField.layer.cornerRadius = 10
+        searchTextField.clipsToBounds = true
+        searchTextField.backgroundColor = UIColor.white
+        searchTextField.placeholder = "Search"
+        searchTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        searchTextField.leftViewMode = .always
+        searchTextField.translatesAutoresizingMaskIntoConstraints = false
+        searchTextField.delegate = self
+        return searchTextField
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         locationManager = CLLocationManager()
@@ -29,19 +42,14 @@ final class MapViewController: UIViewController {
         locationManager?.requestWhenInUseAuthorization()
         locationManager?.requestLocation()
         setupUI()
-        
-        // Fetch locations and update map
-        viewModel.fetchLocations()
-        viewModel.$locations
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] locations in
-                self?.updateMapWithLocations(locations)
-            }
-            .store(in: &cancellables)
+        bindViewModel()
+ 
+        viewModel.fetchStoresAndLocations()
     }
-    
+
     private func setupUI() {
         addMapView()
+        addSearchTextField()
     }
     
     private func addMapView() {
@@ -54,37 +62,33 @@ final class MapViewController: UIViewController {
         ])
     }
     
-    private func updateMapWithLocations(_ locations: [Location]) {
-        mapView.removeAnnotations(mapView.annotations)
-        locations.forEach { location in
-            guard let latitude = location.latitude, let longitude = location.longitude else {
-                print("Invalid coordinates for location: \(location.address)")
-                return
+    private func addSearchTextField() {
+        view.addSubview(searchTextField)
+        NSLayoutConstraint.activate([
+            searchTextField.heightAnchor.constraint(equalToConstant: 44),
+            searchTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            searchTextField.widthAnchor.constraint(equalToConstant: view.bounds.size.width / 1.2),
+            searchTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 60)
+        ])
+        searchTextField.returnKeyType = .go
+    }
+    
+    private func bindViewModel() {
+        viewModel.$locations
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] locations in
+                self?.updateMapWithLocations(locations)
             }
-            let annotation = MKPointAnnotation()
-            annotation.title = location.address
-            annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            mapView.addAnnotation(annotation)
-            print("Added annotation for location: \(location.address), coordinates: (\(latitude), \(longitude))")
-        }
-    }
-}
-
-extension MapViewController: CLLocationManagerDelegate {
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        // Center the map on the user's current location
-        guard let location = locations.first else { return }
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        mapView.setRegion(region, animated: true)
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Failed to get user location: \(error.localizedDescription)")
+            .store(in: &cancellables)
+        
+        viewModel.$errorMessage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                if let message = errorMessage {
+                    self?.showError(message)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func checkLocationAuthorization() {
@@ -94,15 +98,76 @@ extension MapViewController: CLLocationManagerDelegate {
         switch locationManager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             let region = MKCoordinateRegion(center: location.coordinate,
-                                            latitudinalMeters: 1000,
-                                            longitudinalMeters: 1000)
+                                            latitudinalMeters: 3000,
+                                            longitudinalMeters: 3000)
             mapView.setRegion(region, animated: true)
-        case .notDetermined, .restricted:
-            print("Location cannot be determined or restricted.")
-        case .denied:
-            print("Location services have been denied.")
+        case .notDetermined, .restricted, .denied:
+            showError("Location services are restricted or denied.")
         @unknown default:
-            print("Unknown error. Unable to get location.")
+            showError("Unknown error. Unable to get location.")
         }
+    }
+    
+    private func findStoresByName(_ name: String) {
+        let matchedLocations = viewModel.findLocationsByStoreName(name)
+        if let firstLocation = matchedLocations.first {
+            let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: firstLocation.latitude ?? 0.0, longitude: firstLocation.longitude ?? 0.0),
+                                            latitudinalMeters: 3000,
+                                            longitudinalMeters: 3000)
+            mapView.setRegion(region, animated: true)
+        }
+        showLocationsOnMap(locations: matchedLocations)
+    }
+    
+    private func showLocationsOnMap(locations: [Location]) {
+        mapView.removeAnnotations(mapView.annotations)
+        locations.forEach { location in
+            let annotation = MKPointAnnotation()
+            annotation.title = location.address
+            annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude ?? 0.0, longitude: location.longitude ?? 0.0)
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    private func updateMapWithLocations(_ locations: [Location]) {
+        mapView.removeAnnotations(mapView.annotations)
+        locations.forEach { location in
+            let annotation = MKPointAnnotation()
+            annotation.title = location.address
+            annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude ?? 0.0, longitude: location.longitude ?? 0.0)
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    private func showError(_ message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}
+
+extension MapViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let text = textField.text ?? ""
+        if !text.isEmpty {
+            textField.resignFirstResponder()
+            findStoresByName(text)
+        }
+        return true
+    }
+}
+
+extension MapViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // Do nothing
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        showError("Failed to get location: \(error.localizedDescription)")
     }
 }
